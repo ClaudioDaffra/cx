@@ -1,0 +1,56 @@
+
+#   Function:
+
+    m = matrixRand(4, 4, 10);
+
+    matrixPrint(m);
+
+    matrixScanf(&m) ;
+
+    arr = matrixEigenValues(m);
+
+    m=matrixOrthoNormalBasis(m) ;
+
+    m2 = matrixSolvedAugMatrix(m1);
+
+    o = matrixOrthoNormalBasis(m);
+
+    matrixDeterminant(m);
+
+    m2 = matrixClone(m1);
+
+    m2 = matrixInversion(m2);
+
+    m3 = matrixMultiply(m1, m2);
+
+    matrixEquals(m1, m2) ;
+
+    matrixRowScalarMultiply(m, 2, 2);
+
+    matrixReduce(m, 0, 2, 4);
+
+    matrixScalarMultiply(m, 3);
+
+    matrixRowSwap(m, 1, 2);
+
+    d = matrixGramSchmidt(m);
+
+    project = matrixProjection(m1, v->numbers[0], 3);
+
+    matrixAdd(m1, m2);
+
+    matrixSub(m2, m1);
+
+    m2 = matrixTranspose(m);
+
+    m = matrixConstructor(2, 3); 
+
+    m = matrixIdentity(3);
+
+    matrixGramSchmidt(m);
+
+    matrixDestroy(m);
+
+
+/**/
+

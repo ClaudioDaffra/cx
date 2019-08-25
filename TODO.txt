@@ -1,0 +1,42 @@
+
+TO DO
+
+console:    library
+            parametrizzare subroutine
+            
+thread  :   sostituire 
+            createThread con beginthread
+            barriere con semafori.
+            
+random      :   algorithm random number
+statistica  :   library
+regex       :   library
+graphics    :   library
+complex     :   ?
+tuple       :   ?
+
+
+TO FIX
+
+
+###################### 1
+
+C:\cx>   gcc test\ex_bitset_1.c  -o x.exe    -Wall -Wextra -pedantic
+
+test\ex_bitset_1.c: In function 'main':
+test\ex_bitset_1.c:135:12: warning: ISO C does not support the 'I64' ms_printf length modifier [-Wformat=]
+     printf("\n byteSwap of %I64x = "$x64()   , u64   , byteSwap_u64(u64)  );
+            ^~~~~~~~~~~~~~~~~~~~~~~~~
+test\ex_bitset_1.c:135:12: warning: format '%lx' expects argument of type 'long unsigned int', but argument 3 has type 'unsigned int' [-Wformat=]
+test\ex_bitset_1.c:135:12: warning: ISO C does not support the 'I64' ms_printf length modifier [-Wformat=]
+test\ex_bitset_1.c:135:12: warning: format '%lx' expects argument of type 'long unsigned int', but argument 3 has type 'unsigned int' [-Wformat=]
+test\ex_bitset_1.c:136:12: warning: ISO C does not support the 'I' ms_printf length modifier [-Wformat=]
+     printf("\n byteSwap of %Ix   = "$x32()   , u32   , byteSwap_u32(u32)  );
+            ^~~~~~~~~~~~~~~~~~~~~~~~~
+test\ex_bitset_1.c:136:12: warning: format '%Ix' expects argument of type 'size_t', but argument 2 has type 'uint32_t {aka unsigned int}' [-Wformat=]
+test\ex_bitset_1.c:136:12: warning: ISO C does not support the 'I' ms_printf length modifier [-Wformat=]
+test\ex_bitset_1.c:136:12: warning: format '%Ix' expects argument of type 'size_t', but argument 2 has type 'uint32_t {aka unsigned int}' [-Wformat=]
+
+C:\cx>
+  
+
