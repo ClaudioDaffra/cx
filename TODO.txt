@@ -1,9 +1,7 @@
-
+-----
 TO DO
+-----
 
-console:    library
-            parametrizzare subroutine
-            
 thread  :   sostituire 
             createThread con beginthread
             barriere con semafori.
@@ -15,9 +13,9 @@ graphics    :   library
 complex     :   ?
 tuple       :   ?
 
-void w consoleStart(void) ;
-void w consoleSetTextAttr(void) ;
+
 stdio portare consoleSetUTF8
 
+------
 TO FIX
-
+------

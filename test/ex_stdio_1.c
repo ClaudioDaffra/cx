@@ -16,7 +16,7 @@ int main ( void )
     
     //
     
-    consoleSetUTF8() ;
+    stdSetUTF8() ;
 
     //
 

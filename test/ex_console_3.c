@@ -1,16 +1,19 @@
 
+#include "../lib/stdio.h"
 #include "../lib/console.h"
 
 /*
-    cl  test/ex_console_3.c lib/console.c /Fex.exe
-    gcc test\ex_console_3.c lib\console.c -o x.exe
-    gcc test/ex_console_3.c lib/console.c -o x
-    
+    cl  test/ex_console_3.c lib/console.c  lib\stdio.c  /Fex.exe
+    gcc test\ex_console_3.c lib\console.c  lib\stdio.c  -o x.exe
+    gcc test/ex_console_3.c lib/console.c  lib/stdio.c  -o x
 */
 
 
 int main()
 {
+    stdSetUTF8();
+    
+    //
 
     wconsoleStart();
 
@@ -20,7 +23,7 @@ int main()
 
     wconsoleSetTextAttr();
 
-        wprintf ( L"xxxx" );    ;
+        wprintf ( L"汉字" );    ;
 
     console.backGround  = BLACK;
     console.foreGround  = WHITE;
@@ -28,7 +31,7 @@ int main()
 
     wconsoleSetTextAttr();
     
-        wprintf ( L"yyyy" );    ;
+        wprintf ( L"ひらがな" );    ;
 
     console.backGround  = CYAN;
     console.foreGround  = PINK;
@@ -36,11 +39,11 @@ int main()
     
     wconsoleSetTextAttr(); 
     
-        wprintf ( L"zzzz" );    ;
+        wprintf ( L"большой " );    ;
  
     wconsoleStop();
 
-    wprintf ( L"END" );
+    wprintf ( L"ènd" );
 
     return 0;
 }

@@ -37,9 +37,8 @@ typedef int errno_t;
 //extern int  cdFile_wopen        ( FILE** pf, const char* fileName, const char* flag , const char* ccs  )  ;
 extern void cdConsolesetUTF8    ( void    ) ;
 
-//#define wfileOpen       cdFile_wopen
 #define consoleSetUTF8  cdConsolesetUTF8
-
+#define stdSetUTF8      cdConsolesetUTF8
 
 // gnu gcc in windows si basa sulle librerie microsoft
 // queste non supportano il 'long double' (mingw)
