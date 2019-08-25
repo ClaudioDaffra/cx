@@ -5,7 +5,6 @@
 
 /*
     cl  test\ex_bitset_1.c  /Fex.exe    /WX /EHsc 
-    
     gcc test\ex_bitset_1.c  -o x.exe    -Wall -Wextra -pedantic
     gcc test/ex_bitset_1.c  -o x        -Wall -Wextra -pedantic    
 */

@@ -220,6 +220,12 @@ typedef const void*             cpvoid_t;
     #define $x16(...)       STRINGIFY(SUFFIX) STRINGIFY( CONCATENATE( __VA_ARGS__ , x  ) ) 
 #endif 
 
+#if defined(__linux__) 
+    #define $x64(...)       STRINGIFY(SUFFIX) STRINGIFY( CONCATENATE( __VA_ARGS__ , llx ) ) 
+    #define $x32(...)       STRINGIFY(SUFFIX) STRINGIFY( CONCATENATE( __VA_ARGS__ , lx  ) ) 
+    #define $x16(...)       STRINGIFY(SUFFIX) STRINGIFY( CONCATENATE( __VA_ARGS__ , x  ) ) 
+#endif 
+
 /**/
 
 #define _u8(...)  CONCATENATE(__VA_ARGS__,u)

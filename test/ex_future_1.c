@@ -8,7 +8,8 @@
 
     cl          lib\future.c test\ex_future_1.c  /Fex.exe /EHsc /WX
     __MINGW32__ NO
-    gcc
+    gcc lib/future.c test/ex_future_1.c  -o x -lpthread
+
 */
 
 

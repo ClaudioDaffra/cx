@@ -1,5 +1,5 @@
 
-#include "console_lin.h"
+#include "console.h"
 
 #if defined(__linux__)
 
@@ -50,6 +50,7 @@
         console.reverse     = 0;
         console.underline   = 0; 
         consoleSetTextAttr();
+        printf("\033[0m");
     }
 
 #endif
