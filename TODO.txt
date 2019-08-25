@@ -15,8 +15,9 @@ graphics    :   library
 complex     :   ?
 tuple       :   ?
 
-        void w consoleStart(void) ;
-        void w consoleSetTextAttr(void) ;
+void w consoleStart(void) ;
+void w consoleSetTextAttr(void) ;
+stdio portare consoleSetUTF8
 
 TO FIX
 

@@ -57,11 +57,11 @@ simulate standard container of C++ in C.
     iterator        ->  std::iterator                   
     utility         ->  swap,pair,move
     ratio           ->  std::ratio
-    algorithm.      ->  std::algorithm
+    algorithm       ->  std::algorithm
                         (vector,array,dequeue,valArray)
     mvalarray       ->  std::valarray
     
-    console
+    console         ->  console win/lin
     
     file system     ->  [v] file    
     : fs.h              [v] dir 
@@ -275,6 +275,7 @@ this takes care of creating a folder of temporary files and
 managing the allocation with the respective names.
 At the end of the program the garbage collector 
 will take care of deleting all the temporary files created
+
 
 
 # The End.

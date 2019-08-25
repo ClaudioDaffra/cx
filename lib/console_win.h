@@ -52,6 +52,10 @@
      
     void consoleSetTextAttr(void) ;
 
+    #define wconsoleStart       consoleStart
+    #define wconsoleStop        consoleStop
+    #define wconsoleSetTextAttr consoleSetTextAttr
+    
 #endif
 
 

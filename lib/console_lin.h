@@ -39,14 +39,16 @@
             int underline;
         } console_t ;
          
+        console_t console;  
+        
         void consoleStop(void) ;
-
-        console_t console;
-
         void consoleStart(void) ;
-
         void consoleSetTextAttr(void) ;
 
+        void wconsoleStop(void) ;
+        #define  wconsoleStart consoleStart
+        void wconsoleSetTextAttr(void) ;
+        
     #endif
 
 #endif
