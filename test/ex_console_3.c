@@ -8,8 +8,10 @@
     
 */
 
+
 int main()
 {
+
     wconsoleStart();
 
     console.backGround  = RED;

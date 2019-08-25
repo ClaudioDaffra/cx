@@ -5,6 +5,8 @@
     #define _GNU_SOURCE 
     #endif
 
+    #include <wchar.h>
+
     #if defined(__linux__)
 
         typedef enum consoleColor_e

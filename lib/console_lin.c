@@ -63,7 +63,7 @@
             ,(int)(console.backGround+10)
         );
 
-        wprintf ( L"%s",buffer );
+        wprintf ( L"%ls",buffer );
         // ............................................ set bold
         if ( console.bold == 1 )
              wprintf ( L"\e[2m" );
