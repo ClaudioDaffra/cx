@@ -2,15 +2,17 @@
 #include "../lib/console.h"
 
 /*
-    cl  test/ex_console_2.c lib/console.c /Fex.exe
-    gcc test\ex_console_2.c lib\console.c -o x.exe
-    gcc test/ex_console_2.c lib/console.c -o x
+    cl  test/ex_console_2.c lib/console.c lib\stdio.c   /Fex.exe
+    gcc test\ex_console_2.c lib\console.c lib\stdio.c   -o x.exe
+    gcc test/ex_console_2.c lib/console.c lib/stdio.c   -o x
     
 */
 
 int main()
 {
     consoleStart();
+
+    printf ( "\n STREAM [%d]\n",(int)std_stream );
 
     console.backGround  = RED;
     console.foreGround  = GREEN;
@@ -37,6 +39,8 @@ int main()
         printf ( "zzzz" );    ;
  
     consoleStop();
+
+    consoleXY(1,1) ;
 
     printf ( "END" );
 

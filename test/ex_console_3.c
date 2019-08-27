@@ -8,10 +8,11 @@
     gcc test/ex_console_3.c lib/console.c  lib/stdio.c  -o x
 */
 
-
 int main()
 {
     consoleSetUTF8();
+    
+    wprintf ( L"\nstream %d\n",std_stream );
     
     //
 
@@ -43,6 +44,8 @@ int main()
  
     wconsoleStop();
 
+    wconsoleXY(1,1) ;
+    
     wprintf ( L"ènd" );
 
     return 0;

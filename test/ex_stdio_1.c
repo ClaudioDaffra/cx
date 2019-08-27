@@ -16,8 +16,12 @@ int main ( void )
     
     //
     
+    printf ( "\n STREAM [%d]\n",std_stream );
+    
     stdSetUTF8() ;
 
+    wprintf ( L"\n STREAM [%d]\n",std_stream );
+    
     //
 
     gcStop() ;

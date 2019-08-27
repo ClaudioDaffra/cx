@@ -37,6 +37,14 @@ void consoleSetTextAttr(void)
     );
 } 
 
+void consoleXY(int x, int y)
+{
+    COORD coord;
+    coord.X = x;
+    coord.Y = y;
+    SetConsoleCursorPosition(hConsole, coord);
+}
+
 
 /**/
 

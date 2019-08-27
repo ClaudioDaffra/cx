@@ -15,9 +15,9 @@
 
 #define MAX_ATTR 15 
 
-// .................................................................... console stream
+// .................................................................... stream
 
-console_stream_t console_stream = console_stream_ansi; 
+console_stream_t std_stream = console_stream_ansi; 
 
 // .................................................................... setUTF8
 
@@ -55,7 +55,7 @@ console_stream_t console_stream = console_stream_ansi;
 
         // questo per evitare errori di conversione delle stringhe esadecimali
         setlocale ( LC_NUMERIC , "C" ) ;
-        console_stream = console_stream_wide ;    
+        std_stream = console_stream_wide ;    
     } 
  
 #else
@@ -66,7 +66,7 @@ console_stream_t console_stream = console_stream_ansi;
 
         // questo per evitare errori di conversione delle stringhe esadecimali   
         setlocale ( LC_NUMERIC , "C" ) ;
-        console_stream = console_stream_wide ;
+        std_stream = console_stream_wide ;
     }
 
 #endif

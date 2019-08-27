@@ -93,7 +93,9 @@
         consoleSetTextAttr();
         wprintf(L"\033[0m");
     }
-    
+
+    // consoleXY, wconsoleXY
+     
 #endif
 
 

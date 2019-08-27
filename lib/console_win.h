@@ -47,14 +47,16 @@
     console_t console;
 
     void consoleStart(void) ;
-
+    #define wconsoleStart       consoleStart 
+    
     WORD consoleStop(void) ;
-     
-    void consoleSetTextAttr(void) ;
-
-    #define wconsoleStart       consoleStart
     #define wconsoleStop        consoleStop
+    
+    void consoleSetTextAttr(void) ;
     #define wconsoleSetTextAttr consoleSetTextAttr
+
+    void consoleXY(int x, int y) ;
+    #define wconsoleXY          consoleXY
     
 #endif
 

@@ -44,12 +44,16 @@
         console_t console;  
         
         void consoleStop(void) ;
-        void consoleStart(void) ;
+        void wconsoleStop(void) ;   
+        
+        void     consoleStart(void) ;
+        #define  wconsoleStart consoleStart  
+        
         void consoleSetTextAttr(void) ;
-
-        void wconsoleStop(void) ;
-        #define  wconsoleStart consoleStart
         void wconsoleSetTextAttr(void) ;
+         
+        #define  consoleXY(x,y)    printf( "0x1B[%d;%df",y,x);
+        #define wconsoleXY(x,y)   wprintf(L"0x1B[%d;%df",y,x);
         
     #endif
 

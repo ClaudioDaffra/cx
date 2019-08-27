@@ -89,7 +89,7 @@ typedef enum console_stream_e
     
 } console_stream_t ;
 
-extern console_stream_t console_stream;
+extern console_stream_t std_stream;
 
 /**/
 

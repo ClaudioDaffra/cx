@@ -14,8 +14,6 @@ complex     :   ?
 tuple       :   ?
 
 
-stdio portare consoleSetUTF8
-
 ------
 TO FIX
 ------
