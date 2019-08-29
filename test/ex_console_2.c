@@ -48,7 +48,7 @@ int main()
 
     int x,y;
     consoleGetXY(&x,&y);
-    printf ( "\n XY [%d,%d]\n",x,y );  
+    printf ( "\n\n XY [%d,%d]\n",x,y );  
     
     return 0;
 }

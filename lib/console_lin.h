@@ -9,6 +9,10 @@
 
     #if defined(__linux__)
 
+        #include <stdio.h>
+        #include <termios.h>
+        #include <unistd.h>
+
         typedef enum consoleColor_e
         {
             BLACK       =   30,
@@ -58,9 +62,9 @@
         #define  consoleClear(...)    printf ( "\033c");/*__VA_ARGS__*/
         #define wconsoleClear(...)   wprintf (L"\033c");/*__VA_ARGS__*/
 
-        #define  consoleGetXY(x,y)     scanf( "\033[%d;%dR", &x, &y);
-        #define wconsoleGetXY(x,y)    wscanf(L"\033[%d;%dR", &x, &y);
-        
+        int consoleGetXY(int *y, int *x) ;
+        #define wconsoleGetXY   consoleGetXY
+
     #endif
 
 #endif
