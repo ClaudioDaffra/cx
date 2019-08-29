@@ -52,8 +52,14 @@
         void consoleSetTextAttr(void) ;
         void wconsoleSetTextAttr(void) ;
          
-        #define  consoleXY(x,y)    printf( "\e[%d;%df",y,x);
-        #define wconsoleXY(x,y)   wprintf(L"\e[%d;%df",y,x);
+        #define  consoleSetXY(x,y)    printf( "\e[%d;%df",y,x);
+        #define wconsoleSetXY(x,y)   wprintf(L"\e[%d;%df",y,x);
+        
+        #define  consoleClear(...)    printf ( "\033c");/*__VA_ARGS__*/
+        #define wconsoleClear(...)   wprintf (L"\033c");/*__VA_ARGS__*/
+
+        #define  consoleGetXY(x,y)     scanf( "\033[%d;%dR", &x, &y);
+        #define wconsoleGetXY(x,y)    wscanf(L"\033[%d;%dR", &x, &y);
         
     #endif
 

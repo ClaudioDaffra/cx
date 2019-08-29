@@ -37,7 +37,7 @@ void consoleSetTextAttr(void)
     );
 } 
 
-void consoleXY(int x, int y)
+void consoleSetXY(int x, int y)
 {
     COORD coord;
     coord.X = x;
@@ -45,6 +45,15 @@ void consoleXY(int x, int y)
     SetConsoleCursorPosition(hConsole, coord);
 }
 
+void consoleGetXY(int *x,int *y) 
+{
+   CONSOLE_SCREEN_BUFFER_INFO bufferInfo;
+   
+   GetConsoleScreenBufferInfo(hConsole, &bufferInfo);
+   bufferInfo.dwCursorPosition;
+   *x = bufferInfo.dwCursorPosition.X ;
+   *y = bufferInfo.dwCursorPosition.Y ;   
+}
 
 /**/
 

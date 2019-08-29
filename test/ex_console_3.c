@@ -12,6 +12,8 @@ int main()
 {
     consoleSetUTF8();
     
+    wconsoleClear();
+    
     wprintf ( L"\nstream %d\n",std_stream );
     
     //
@@ -44,9 +46,13 @@ int main()
  
     wconsoleStop();
 
-    wconsoleXY(1,1) ;
+    wconsoleSetXY(1,1) ;
     
-    wprintf ( L"ènd" );
+    wprintf ( L"\n\nènd" );
 
+    int x,y;
+    wconsoleGetXY(&x,&y);
+    wprintf ( L"\n XY [%d,%d]\n",x,y );  
+    
     return 0;
 }

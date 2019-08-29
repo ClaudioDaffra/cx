@@ -12,6 +12,8 @@ int main()
 {
     consoleStart();
 
+    consoleClear();
+
     printf ( "\n STREAM [%d]\n",(int)std_stream );
 
     console.backGround  = RED;
@@ -40,9 +42,13 @@ int main()
  
     consoleStop();
 
-    consoleXY(1,1) ;
+    consoleSetXY(1,1) ;
 
-    printf ( "END" );
+    printf ( "\n\nEND" );
 
+    int x,y;
+    consoleGetXY(&x,&y);
+    printf ( "\n XY [%d,%d]\n",x,y );  
+    
     return 0;
 }

@@ -55,8 +55,14 @@
     void consoleSetTextAttr(void) ;
     #define wconsoleSetTextAttr consoleSetTextAttr
 
-    void consoleXY(int x, int y) ;
-    #define wconsoleXY          consoleXY
+    void consoleSetXY(int x, int y) ;
+    #define wconsoleSetXY       consoleSetXY
+    
+    #define consoleClear(...)   system("cls");/*__VA_ARGS__*/
+    #define wconsoleClear       consoleClear
+
+    void consoleGetXY(int *x,int *y) ;
+    #define wconsoleGetXY       consoleGetXY
     
 #endif
 
