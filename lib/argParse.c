@@ -233,6 +233,9 @@ argparse_parse(struct argparse *self, int argc, const char **argv)
     // vedi #1 #2 #3
     char* temp  ;
         
+	// check arg parse
+    if ( argc == 1 ) goto argParseUsage;
+		
     self->argc = argc - 1;
     self->argv = argv + 1;
     self->out  = argv;
@@ -309,6 +312,8 @@ argparse_parse(struct argparse *self, int argc, const char **argv)
 
 unknown:
         fprintf(stderr, "error: unknown option `%s`\n", self->argv[0]);
+		
+argParseUsage:
         argparse_usage(self);
         exit(1);
     }
