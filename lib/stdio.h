@@ -45,7 +45,9 @@ extern void cdConsolesetUTF8    ( void    ) ;
  
 #ifdef __GNUC__    
     #if defined(_WIN32) || defined(_WIN64)
-        #define __USE_MINGW_ANSI_STDIO  1      
+		#ifndef __USE_MINGW_ANSI_STDIO
+			#define __USE_MINGW_ANSI_STDIO  1
+	    #endif
     #endif
 #endif
 
