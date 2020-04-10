@@ -292,7 +292,12 @@ bool hash_map_contains_key(hash_map *map, void *key)
 
 	return false;
 }
-
+// GNU GCC 9.2 : lib/hmap.c:299:39: warning: 
+// ISO C forbids conversion of object pointer to function pointer type [-Wpedantic] C11
+#ifdef __GNUC__
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wpedantic"
+#endif
 hmap_t* cd_map_def(void* cmp ) 
 {
 	hmap_t* map = gcMalloc(sizeof(hash_map));
@@ -313,7 +318,9 @@ hmap_t* cd_mapw_new(void)
 	hash_map_init(map, cd_map_max_size , (hash_map_comparator) wcscmp, NULL);
 	return map ;
 }
-
+#ifdef __GNUC__
+#pragma GCC diagnostic pop
+#endif
 size_t cd_map_count(hmap_t* map) 
 {
 	return map->size ;
