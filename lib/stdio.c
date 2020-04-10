@@ -55,7 +55,8 @@ console_stream_t std_stream = console_stream_ansi;
 
         // questo per evitare errori di conversione delle stringhe esadecimali
         setlocale ( LC_NUMERIC , "C" ) ;
-        std_stream = console_stream_wide ;    
+        std_stream = console_stream_wide ;
+
     } 
  
 #else

@@ -359,7 +359,8 @@ extern struct whmap_n whmap ;
 
 // hmap with comparator 
 
-#define hmapDef(CMP)    cd_map_def(CMP) 
+#define hmapDef(CMP)     cd_map_def(CMP) 
+#define whmapDef(CMP)    cd_map_def(CMP) 
     
 #endif /* cdHMAP */
 

@@ -79,7 +79,7 @@ struct cdMapNode* cdMapNodeSearch(struct cdMapNode* root, void* first)
     else 
     {
         struct cdMapNode*left = cdMapNodeSearch(root->left, first);
-        return left ? left: cdMapNodeSearch(root->right, first);
+        return left ? left : cdMapNodeSearch(root->right, first);
     }
 }
 
