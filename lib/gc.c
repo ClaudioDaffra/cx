@@ -158,8 +158,9 @@ void* gcRealloc_( void* P , size_t N )
 /**/
 
 // ................................................................... wrapper strdup
-char* gcStrDup( char *s)
+char* gcStrDup( char *s )
 {
+    if ( s == NULL ) return (char*)NULL ;
     #undef strdup
     return (char*)gcPush( strdup(s) ) ;
     #define strdup gcStrDup
@@ -168,10 +169,12 @@ char* gcStrDup( char *s)
 // ................................................................... wrapper wcsdup
 wchar_t* gcWcsDup( wchar_t *s)
 {
+    if ( s == NULL ) return (wchar_t*)NULL ;
     #undef wcsdup
     return (wchar_t*)gcPush( wcsdup(s) ) ;
     #define wcs gcWcsDup
 }
+
 // ................................................................... intDup
 
 int* gcIntDup(int val)
