@@ -32,6 +32,18 @@ typedef struct TYPEOF ( valArray_s_ , ID )          \
 }  TYPEOF ( valArray_ , ID ) ;                      \
 TYPEOF ( valArray_ , ID ) ID
 
+// ........................................................... [] valArray def in struct
+
+#define valArrayDataType(TYPE,ID) typedef TYPE valArrayDataType ## ID;  
+
+#define valArrayStruct(TYPE,ID)                     \
+struct TYPEOF ( valArray_s_ , ID )                  \
+{                                                   \
+    TYPE*   data        ;                           \
+    size_t  size        ;                           \
+    size_t  capacity    ;                           \
+}  ID 
+
 // ........................................................... [] valArrayNew(ID,N) 
  
 #define valArrayNew(ID,N)                                                    \

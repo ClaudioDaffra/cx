@@ -39,7 +39,19 @@ typedef struct TYPEOF ( queue_s_ , ID )             \
     size_t  capacity    ;                           \
 }  TYPEOF ( queue_ , ID ) ;                         \
 TYPEOF ( queue_ , ID ) ID
- 
+
+// ........................................................... [] queue def in struct
+
+#define queueDataType(TYPE,ID) typedef TYPE queueDataType ## ID;  
+
+#define queueStruct(TYPE,ID)                        \
+struct TYPEOF ( queue_s_ , ID )                     \
+{                                                   \
+    TYPE*   data        ;                           \
+    size_t  size        ;                           \
+    size_t  capacity    ;                           \
+}  ID 
+
 // ........................................................... [] queueNew(ID,N) 
  
 #define queueNew(ID,N)                                                      \

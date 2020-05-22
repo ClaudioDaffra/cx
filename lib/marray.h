@@ -44,6 +44,17 @@ typedef struct TYPEOF ( array_s_ , ID )             \
 }  TYPEOF ( array_ , ID ) ;                         \
 TYPEOF ( array_ , ID ) ID
 
+// ........................................................... [] array def in struct
+
+#define arrayDataType(TYPE,ID) typedef TYPE arrayDataType ## ID;  
+
+#define arrayStruct(TYPE,ID)                        \
+struct TYPEOF ( array_s_ , ID )                     \
+{                                                   \
+    TYPE*   data ;                                  \
+    size_t  size        ;                           \
+}  ID 
+
 // ........................................................... [] arrayNew(ID,N) 
  
 #define arrayNew(ID,N)                                                      \

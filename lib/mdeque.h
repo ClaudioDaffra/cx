@@ -52,12 +52,26 @@ typedef struct TYPEOF ( deque_s_ , ID )             \
 }  TYPEOF ( deque_ , ID ) ;                         \
 TYPEOF ( deque_ , ID ) ID
 
+// ........................................................... [] deque def in struct
+
+#define dequeDataType(TYPE,ID) typedef TYPE dequeDataType ## ID;  
+
+#define dequeStruct(TYPE,ID)                       \
+struct TYPEOF ( deque_s_ , ID )                    \
+{                                                  \
+    TYPE*   data ;                                 \
+    size_t  size        ;                          \
+    size_t  capacity    ;                          \
+    size_t  start    ;                             \
+    size_t  stop    ;                              \
+}  ID 
+
+// ........................................................... [] NEW
 #define dequeNew(ID,N)                                      \
 (ID).data = (void*) gcMalloc (  sizeof((ID).data) * N);     \
 (ID).capacity  = N;                                         \
 (ID).start     = N/2;                                       \
 (ID).stop      = N/2; 
-
     
 // ........................................................... [] SIZE
 #define dequeSize(ID) ((ID).stop-(ID).start)

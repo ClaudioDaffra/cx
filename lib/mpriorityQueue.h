@@ -47,7 +47,20 @@ typedef struct TYPEOF ( priorityQueue_s_ , ID )     \
     int     (*compare)  (const void*,const void*) ; \
 }  TYPEOF ( priorityQueue_ , ID ) ;                 \
 TYPEOF ( priorityQueue_ , ID ) ID
- 
+
+// ........................................................... [] priorityQueue def in struct
+
+#define priorityQueueDataType(TYPE,ID) typedef TYPE priorityQueueDataType ## ID;  
+
+#define priorityQueueStruct(TYPE,ID)                    \
+struct TYPEOF ( priorityQueue_s_ , ID )                 \
+{                                                       \
+    TYPE*   data ;                                      \
+    size_t  size        ;                               \
+    size_t  capacity    ;                               \
+    int     (*compare)  (const void*,const void*) ;     \
+}  ID 
+
 // ........................................................... [] priorityQueueNew(ID,N) 
  
 #define priorityQueueNew(ID,N)                                  \
