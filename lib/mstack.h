@@ -40,7 +40,19 @@ typedef struct TYPEOF ( stack_s_ , ID )             \
     size_t  capacity    ;                           \
 }  TYPEOF ( stack_ , ID ) ;                         \
 TYPEOF ( stack_ , ID ) ID
- 
+
+// ........................................................... [] stack def in struct 
+
+#define stackDataType(TYPE,ID) typedef TYPE stackDataType ## ID;  
+
+#define stackStruct(TYPE,ID)                        \
+struct TYPEOF ( stack_s_ , ID )                     \
+{                                                   \
+    TYPE*   data        ;                           \
+    size_t  size        ;                           \
+    size_t  capacity    ;                           \
+}  ID 
+
 // ........................................................... [] stackNew(ID,N) 
  
 #define stackNew(ID,N)                                                      \

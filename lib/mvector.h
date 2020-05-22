@@ -39,7 +39,19 @@ typedef struct TYPEOF ( vector_s_ , ID )            \
     size_t  capacity    ;                           \
 }  TYPEOF ( vector_ , ID ) ;                        \
 TYPEOF ( vector_ , ID ) ID
- 
+
+// ........................................................... [] vector def in struct 
+
+#define vectorDataType(TYPE,ID) typedef TYPE vectorDataType ## ID;  
+
+#define vectorStruct(TYPE,ID)                       \
+struct TYPEOF ( vector_s_ , ID )                    \
+{                                                   \
+    TYPE*   data        ;                           \
+    size_t  size        ;                           \
+    size_t  capacity    ;                           \
+}  ID 
+
 // ........................................................... [] vectorNew(ID,N) 
  
 #define vectorNew(ID,N)                                                     \
