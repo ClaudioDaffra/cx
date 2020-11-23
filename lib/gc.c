@@ -1,6 +1,8 @@
 
 #include "gc.h"
 
+struct gcNode_s *gc_root ;
+
 static int gcPopButNotFree=0 ;  // flag elimina ma non dealloca
 
 // ................................................................... new

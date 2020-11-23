@@ -45,8 +45,7 @@ void*               gcPush_         (struct gcNode_s *  gc_root ,   void*P      
 void                gcPop_          (struct gcNode_s *  gc_root ,   void*P              ) ;
 void*               gcRealloc_      (void*              P       ,   size_t dim          ) ;
 
-
-struct gcNode_s *gc_root ;
+extern struct gcNode_s *gc_root ;
 
 // push : insert node and pointer
 // free : delete node and pointer
@@ -62,13 +61,13 @@ struct gcNode_s *gc_root ;
 #define flushall _flushall
 #endif 
 
-extern void cdEraseTemp(void) ;
+//extern void cdEraseTemp(void) ;
 
 #define gcStop()\
 do {\
     gcStop_(gc_root);\
-    fcloseall();\
-    cdEraseTemp();\
+    /*fcloseall();*/\
+    /*cdEraseTemp()*/;\
 }while(0);
  
 #define gcPush(P)               gcPush_(gc_root,(P))
