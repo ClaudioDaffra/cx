@@ -27,8 +27,10 @@
 
 // ........................................................... [] vector(TYPE) 
 
-// vector_v1_int    (int)
-// vector_v1
+// vectorType(TYPE,ID)
+// 			struct 	vector_s_ID		: 	struct
+// 			vector_ID				:	typedef
+// extern  struct 	vector_s_ID		:	exten decl in .h
 
 #define vectorType(TYPE,ID)                         \
 typedef TYPE vectorDataType ## ID;                  \
