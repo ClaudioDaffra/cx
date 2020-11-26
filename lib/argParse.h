@@ -10,8 +10,10 @@
 #ifndef ARGPARSE_H
 #define ARGPARSE_H
 
+#ifndef _GNU_SOURCE
 #ifdef __linux__
 #define _GNU_SOURCE 
+#endif
 #endif
 
 #include <stdbool.h>
