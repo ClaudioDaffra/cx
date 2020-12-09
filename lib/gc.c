@@ -1,9 +1,9 @@
 
 #include "gc.h"
 
-struct gcNode_s *gc_root ;
-
 static int gcPopButNotFree=0 ;  // flag elimina ma non dealloca
+
+struct gcNode_s *gc_root ;
 
 // ................................................................... new
 struct gcNode_s *gcNewNode(void* item) 

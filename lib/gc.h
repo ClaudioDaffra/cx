@@ -45,6 +45,7 @@ void*               gcPush_         (struct gcNode_s *  gc_root ,   void*P      
 void                gcPop_          (struct gcNode_s *  gc_root ,   void*P              ) ;
 void*               gcRealloc_      (void*              P       ,   size_t dim          ) ;
 
+
 extern struct gcNode_s *gc_root ;
 
 // push : insert node and pointer

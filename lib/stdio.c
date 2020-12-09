@@ -15,6 +15,18 @@
 
 #define MAX_ATTR 15 
 
+
+/*		
+ 		TODO convert from char* to wchar_t*
+
+		char*	vIn = retval;
+
+		wchar_t * vOut = malloc(  sizeof(wchar_t) * (strlen(vIn)+1) );
+
+		mbstowcs(vOut, vIn, strlen(vIn));
+
+*/
+ 
 // .................................................................... stream
 
 console_stream_t std_stream = console_stream_ansi; 

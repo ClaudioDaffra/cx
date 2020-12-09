@@ -1,4 +1,3 @@
-
 #ifndef cdHMAP
 #define cdHMAP
 
