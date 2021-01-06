@@ -2,7 +2,7 @@
  * Copyright (C) 
  *  2012-2015 Yecheng Fu        <cofyc.jackson  at gmail dot com>
  *  2019      Claudio Daffra    <daffra.claudio at gmail dot com>
- * All rights reserved.
+ *  All rights reserved.
  *
  * Use of this source code is governed by a MIT-style license that can be found
  * in the LICENSE file.
@@ -10,16 +10,11 @@
 #ifndef ARGPARSE_H
 #define ARGPARSE_H
 
-#ifndef _GNU_SOURCE
-#ifdef __linux__
-#define _GNU_SOURCE 
-#endif
-#endif
-
-#include <stdbool.h>
+#include "cxx.h"
 
 // disable 4090 warning in line 315
 // memmove(    self->out + self->cpidx, ...
+
 #if defined (_MSC_VER)
 #pragma warning( disable : 4090 )
 #endif
@@ -188,5 +183,4 @@ typedef struct argparse argparse_t ;
 
 
 /**/
-
 

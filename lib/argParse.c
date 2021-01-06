@@ -9,12 +9,7 @@
  * in the LICENSE file.
  */
  
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <string.h>
-#include <assert.h>
-#include <errno.h>
+
 #include "argParse.h"
 
 #define OPT_UNSET 1
@@ -44,7 +39,7 @@ argparse_error(struct argparse *self, const struct argparse_option *opt,
 {
     (void)self;
     if (flags & OPT_LONG) {
-        fprintf(stderr, "error: option `--%s` %s\n", opt->long_name, reason);
+        fprintf(stderr, "error: option `--,/%s` %s\n", opt->long_name, reason);
     } else {
         fprintf(stderr, "error: option `-%c` %s\n", opt->short_name, reason);
     }
@@ -228,10 +223,10 @@ int
 argparse_parse(struct argparse *self, int argc, const char **argv)
 {
     // #1 opzione long opt microsoft ex : debug ;
-    // viene trasformata da /debuf a --debug
+    // viene trasformata da /debug a --debug
     // infine viene rilasciata la memoria con free
     // vedi #1 #2 #3
-    char* temp  ;
+    char* temp=NULL; 
         
     self->argc = argc - 1;
     self->argv = argv + 1;
@@ -303,7 +298,7 @@ argparse_parse(struct argparse *self, int argc, const char **argv)
                 goto unknown;
         }
         // #3 release memory
-        free(temp);
+        if (temp!=NULL) { free(temp); temp=NULL; }
         
         continue;
 
@@ -392,7 +387,7 @@ argparse_usage(struct argparse *self)
             pos += fprintf(stdout, ", ");
         }
         if (options->long_name) {
-            pos += fprintf(stdout, "--%s", options->long_name);
+            pos += fprintf(stdout, "--,/%s", options->long_name);
         }
         if (options->type == ARGPARSE_OPT_INTEGER) {
             pos += fprintf(stdout, "=<int>");
