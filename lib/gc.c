@@ -146,6 +146,8 @@ void gcPop_ ( struct gcNode_s *gc_root,void*P )
 // ................................................................... wrapper realloc
 void* gcRealloc_( void* P , size_t N )
 {
+	if (p==NULL) return gcMalloc(N);
+	
     void* old=P;
     P = (void*) realloc ( P,N ) ;
 
