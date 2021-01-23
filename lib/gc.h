@@ -77,7 +77,7 @@ do {\
 #define gcFree(P)               gcPopBack_(gc_root,(P))  
 #define gcMalloc(...)           gcPush( malloc(  __VA_ARGS__ ) ) 
 #define gcRealloc( P, ... )     gcRealloc_((P),__VA_ARGS__)
-
+#define gcCalloc(N,...)         gcPush( calloc(  N,__VA_ARGS__ ) ) 
 
 /**/
 
