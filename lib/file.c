@@ -244,8 +244,11 @@ int fileExists( char* _szPath )
 #endif
 
 #if defined(__linux__) 
+
     FILE *file;
-    if (file = fopen( szPath, "r"))
+    file = fopen( szPath, "r") ;
+    
+    if ( file )
     {
         fclose(file);
         return 1;

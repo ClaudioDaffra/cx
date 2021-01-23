@@ -81,6 +81,8 @@ int main(void)
 	
 	hmapIt_t* it = hmap.iterator ( x , "key1" );
 
+	printf ( " value %s .\n",(char*)it->data ) ;
+
 	// CLEAR DELETE	
 
 	hmap.clear ( x ) ;	
