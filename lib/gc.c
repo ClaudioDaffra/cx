@@ -176,7 +176,7 @@ wchar_t* gcWcsDup( wchar_t *s)
     if ( s == NULL ) return (wchar_t*)NULL ;
     #undef wcsdup
     return (wchar_t*)gcPush( wcsdup(s) ) ;
-    #define wcs gcWcsDup
+    #define wcsdup gcWcsDup
 }
 
 // ................................................................... intDup
