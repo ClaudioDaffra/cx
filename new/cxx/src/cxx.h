@@ -57,7 +57,7 @@
     #include <stdbool.h>
     #include <wctype.h>
     #include <time.h>
-
+    
     // .............................................. string.h
 
     #ifndef cdMB_CUR_MAX
@@ -85,15 +85,18 @@
 
     #include "gc.h"
     #include "hashMap.h"
-    #include "stdio.h"    
+
+    #include "stdio.h"
+
     #include "string.h"
     #include "stringw.h"
     #include "string8.h"
+
     #include "mvector.h"
     #include "iterator.h"
     #include "mstack.h"
-    #include "marray.h"
-    
+
+
     // ................................................ new
 
     #define new(ID)       gcMalloc(sizeof(ID));
@@ -101,6 +104,8 @@
     // ................................................ delete
 
     #define delete(ID)    if((ID)!=NULL){gcFree(ID);(ID)=NULL;}
+
+    //
 
     #ifndef CONCATENATE
     #define CONCATENATE(x,y)   x##y

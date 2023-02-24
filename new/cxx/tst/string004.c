@@ -3,6 +3,7 @@
 
 /*
 	// cls      &   cl  src\gc.c src\stdio.c src\string.c tst\string004.c   /Febin\x.exe /utf-8     /WX
+    
 	// clear    ;   gcc src/gc.c src/stdio.c src/string.c tst/string004.c   -o bin/x    -Wall   -Wextra -pedantic
 */
 
@@ -41,6 +42,7 @@ int main()
     //.......................... from char*
 
     const char* temp = "Claudio Daffra" ;
+    
     wstringFromS8 ( s1 , temp ) ;
 
     wprintf ( L"%ls -> size %zu capacity %zu empty %u len(%zu)\n"
@@ -224,6 +226,7 @@ int main()
     // .........................  compare
 
 	wprintf ( L"compare s1,s2 [%ls] ?= [%ls] -> [%d] \n",s1.data,s2.data,!wstringCompare(s1,s2) ) ;
+    
 	wprintf ( L"compare s1,s2 [%ls] ?= [%ls] -> [%d] \n",s1.data,s1.data,!wstringCompareN(s1,s1,3) ) ;
 		
     // ......................... 

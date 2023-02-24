@@ -18,20 +18,16 @@ int main() //
 	stdio_t stdio ;
  
 	stdioSetUTF8( &stdio );
+
 /*
+
    char16_t* str16 = u"s16) ç°§é*èé€ 一周有七天。一周有七天,сказать,غداً في العاشرة و.\n"; // WIN ERR
  
    fwprintf ( stdout,L"%ls\n", cnvS8toWS( convS16toMBS( str16 ) ) ) ;
 
-
-// char32_t* str32 = U"s32) ç°§é*èé€ 一周有七天。一周有七天,сказать,غداً في العاشرة و.\n"; // WIN ERR
+   char32_t* str32 = U"s32) ç°§é*èé€ 一周有七天。一周有七天,сказать,غداً في العاشرة و.\n"; // WIN ERR
    
-//  fwprintf ( stdout,L"%ls\n", cnvS8toWS( convS32toMBS( str32 ) ) ) ;
-
-//  convS16toMBS( str16 );
-
-//  convS32toMBS( str32 );
- 
+   fwprintf ( stdout,L"%ls\n", cnvS8toWS( convS32toMBS( str32 ) ) ) ;
 */
 
 // ...............................................
@@ -55,6 +51,7 @@ int main() //
 
 
     char* x = cnvWStoS8(L"你好吗") ;
+    
     fwprintf ( stdout,L"[%ls]\n",cnvS8toWS(x) ) ;
 
     fwprintf(stdout,L"\nthat's al folks ! ( string002.c ) \n");

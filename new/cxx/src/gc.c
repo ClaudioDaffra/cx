@@ -1,75 +1,86 @@
 #include "gc.h"
 
-// initialize a hash map structure 
+// initialize a hash gc structure 
 
-#ifdef __GNUC__
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
-#pragma GCC diagnostic ignored "-Wunused-parameter"
-#pragma GCC diagnostic ignored "-Wpedantic"
-#endif
+gc_t *gc ;
 
-short int hash_map_init    (
-    hashMap_t* map                                          , 
-    unsigned long int   (* hash_fn)    (void* key)          , 
-    unsigned char       (* key_comp)   (void* p1, void* p2) , 
-    unsigned long int    start_len                          , 
+
+short int gcMapInit    (
+    gcMap_t* gc                                             , 
+    size_t              (* gcHashFN)   (void* ptr)           , 
+    unsigned char       (* gcPtrCMP)   (void* p1, void* p2)  , 
+    size_t    start_len                                      , 
     float                load_factor
 )
 {
-    map->table = calloc(start_len, sizeof(hmNode_t*));
+    gc->table = calloc(start_len, sizeof(gcMapNode_t*));
     
-    if(!map->table) return HM_ERR_ALLOC;
+    if(!gc->table) return GC_ERR_ALLOC;
     
-    map->hash_fn         = hash_fn;
-    map->key_comp        = key_comp;
-    map->size            = start_len;
-    map->load_factor     = load_factor;
-    map->count           = 0;
+    gc->gcHashFN        = gcHashFN;
+    gc->gcPtrCMP        = gcPtrCMP;
+    gc->size            = start_len;
+    gc->load_factor     = load_factor;
+    gc->count           = 0;
 
     return 0;
 }
 
-// add a key-value pair to a hash map, resizing and rehashing if necessary 
+// add a ptr-dtor pair to a hash gc, resizing and rehashing if necessary 
 
-short int hash_map_put(hashMap_t* map, void* key, void* value, unsigned short int flags)
+short int gcMapPut( gcMap_t* gc, void* ptr, gcDtorCallBack_t dtor, unsigned short int flags)
 {
-    hmNode_t* n_node,* s_node;
-    unsigned long int node_idx,
-    node_hash;
+    gcMapNode_t *n_node,* s_node;
+    size_t      node_idx    ,
+                node_hash   ;
 
     // perform resize and rehash if necessary 
-    if(((float)(++ map->count)) / map->size > map->load_factor)
+    if(((float)(++ gc->count)) / gc->size > gc->load_factor)
     {
-        unsigned long int i;
+        size_t i;
 
-        size_t n_len = map->size << 1;
-        hmNode_t** temp = calloc(n_len, sizeof(hmNode_t*));
+        size_t n_len = gc->size << 1;
+        gcMapNode_t** temp = calloc(n_len, sizeof(gcMapNode_t*));
         if(!temp)
         {
-            map->count --;
-            return HM_ERR_ALLOC;
+            gc->count --;
+            return GC_ERR_ALLOC;
         }
 
         // for each element in the table 
-        for(i = 0; i < map->size; i ++)
+        for(i = 0; i < gc->size; i ++)
         {
             // traverse down the linked list 
-            hmNode_t    * current,
-                    * next;
+            gcMapNode_t     * current   ,
+                            * next      ;
 
             // guard against empty elements 
-            current = map->table[i];
+            current = gc->table[i];
             while(current)
             {
-            unsigned long int npos;
+            size_t npos;
 
             // prepare lookahead pointer 
             next = current->next;
 
             // rehash and copy each item 
-            npos = (map->hash_fn(current->key)) % n_len;
+
+
+            npos = (gc->gcHashFN(current->ptr)) % n_len;
+
+// ################################# 1234
+// [32][64][16][48][0] FIRST
+/* SECOND
+[10][0][2][10][0][2][10][0][2][10][0][2][16][10][0][2][16][10][0][2][2][16][10][0][2][2][16][10][0][2]
+[2][2][16][10][0][2][2][2][16][10][0][2][2][2][14][16][10][0][2][2][2][14][16][10][0][2][2][2][14][16]
+[10][0][2][2][2][14][16][18][10][0][2][2][2][14]
+[4][16][18][10][0][2][2][2][14][4][16][18][10][0][2][2][2][14][4][16][18][8][10][0][2][2][2][14][4][16]
+*/
+//printf ( "[%d]",npos );
+// #################################
+
             current->next = temp[npos];
+            
             temp[npos] = current;
 
             // advance to next list element 
@@ -77,147 +88,152 @@ short int hash_map_put(hashMap_t* map, void* key, void* value, unsigned short in
             }
         }
 
-        free(map->table);
-        map->table = temp;
-        map->size = n_len;
+        free(gc->table);
+        gc->table = temp;
+        gc->size = n_len;
     }
 
-    // check whether item is already in map
-    node_hash = (*map->hash_fn)(key);
-    node_idx = node_hash % map->size;
-    s_node = map->table[node_idx];
+    // check whether item is already in gc
+    node_hash = (*gc->gcHashFN)(ptr);
+    node_idx = node_hash % gc->size;
+    s_node = gc->table[node_idx];
     while(s_node)
     {
-        if(flags & HM_FAST ? ((map->hash_fn)(s_node->key) == node_hash) : ((map->key_comp)(s_node->key, key)))
+        if(flags & GC_FAST ? ((gc->gcHashFN)(s_node->ptr) == node_hash) : ((gc->gcPtrCMP)(s_node->ptr, ptr)))
         {
-            map->count --;
+            gc->count --;
 
-            // deallocate existing value if necessary
-            if(flags & HM_DESTROY)
-            free(s_node->value);
+            // deallocate existing dtor if necessary
+//            if(flags & GC_DESTROY)            free(s_node->dtor);
 
-            // update value and return if found
-            s_node->value = value;
+            // update dtor and return if found
+            s_node->dtor = dtor;
             return 0;
         }
+        
         s_node = s_node->next;
     }
 
-    // create a new hmNode_t to hold data 
-    n_node = malloc(sizeof(hmNode_t));
+    // create a new gcMapNode_t to hold data 
+    n_node = malloc(sizeof(gcMapNode_t));
     if(!n_node)
     {
-        map->count --;
-        return HM_ERR_ALLOC;
+        gc->count --;
+        return GC_ERR_ALLOC;
     }
-    n_node->key = key;
-    n_node->value = value;
-    n_node->next = map->table[node_idx];
+    n_node->ptr = ptr;
+    n_node->dtor = dtor;
+    n_node->next = gc->table[node_idx];
 
-    // add new hmNode_t to table 
-    map->table[node_idx] = n_node;
+    // add new gcMapNode_t to table 
+    gc->table[node_idx] = n_node;
 
     return 0;
 }
 
-// get the value associated with a key returns NULL if key does not exist in map
+// get the dtor associated with a ptr returns NULL if ptr does not exist in gc
  
-void* hash_map_get(hashMap_t* map, void* key, unsigned short int flags)
+gcDtorCallBack_t* gcMapGet( gcMap_t* gc, void* ptr, unsigned short int flags)
 {
-    hmNode_t* current;
-    unsigned long int k_hash;
+    gcMapNode_t* current;
+    size_t k_hash;
 
-    k_hash = (map->hash_fn)(key);
-    current = map->table[k_hash % map->size];
+    k_hash = (gc->gcHashFN)(ptr);
+    current = gc->table[k_hash % gc->size];
     while(current)
     {
-        if(flags & HM_FAST ? (k_hash == (map->hash_fn)(current->key)) : ((map->key_comp(key, current->key))))
-        return current->value;
-
-        current = current->next;
-    }
-
-    return NULL;
-}
-
-// .............................................. hash map at
-
-void* hash_map_at_address(hashMap_t* map, void* key, unsigned short int flags)
-{
-    hmNode_t* current;
-    unsigned long int k_hash;
-
-    k_hash = (map->hash_fn)(key);
-    current = map->table[k_hash % map->size];
-    while(current)
-    {
-        if(flags & HM_FAST ? (k_hash == (map->hash_fn)(current->key)) : ((map->key_comp(key, current->key))))
-        return &(current->value);
-
-        current = current->next;
-    }
-
-    return NULL;
-}
-
-// removes an item from the hash map if present (else no-op)
-
-short int hash_map_drop(hashMap_t* map, void* key, unsigned short int flags)
-{
-    hmNode_t* current,
-    * parent = NULL;
-    
-    unsigned long int k_hash,
-    idx;
-
-    k_hash = (map->hash_fn)(key);
-    idx = k_hash % map->size;
-
-    current = map->table[idx];
-    while(current)
-    {
-        if(flags & HM_FAST ? ((map->hash_fn)(current->key) == k_hash) : ((map->key_comp)(key, current->key)))
+        if(flags & GC_FAST ? (k_hash == (gc->gcHashFN)(current->ptr)) : ((gc->gcPtrCMP(ptr, current->ptr))))
         {
-            // redirect the hmNode_t chain around it, then destroy 
+            return &current->dtor;
+        }
+
+        current = current->next;
+    }
+
+    return NULL;
+}
+
+// .............................................. hash gc at
+
+void* gcMapAtAddress( gcMap_t* gc, void* ptr, unsigned short int flags)
+{
+    gcMapNode_t*    current ;
+    size_t          k_hash  ;
+
+    k_hash = (gc->gcHashFN)(ptr);
+    current = gc->table[k_hash % gc->size];
+    while(current)
+    {
+        if(flags & GC_FAST ? (k_hash == (gc->gcHashFN)(current->ptr)) : ((gc->gcPtrCMP(ptr, current->ptr))))
+        {
+        return &(current->dtor);
+        }
+        current = current->next;
+    }
+
+    return NULL;
+}
+
+// removes an item from the hash gc if present (else no-op)
+
+short int gcMapDrop( gcMap_t* gc, void* ptr, unsigned short int flags)
+{
+    gcMapNode_t     * current       ,
+                    * parent = NULL ;
+    
+    size_t  k_hash  ,
+            idx     ;
+
+    k_hash = (gc->gcHashFN)(ptr);
+    idx = k_hash % gc->size;
+
+    current = gc->table[idx];
+    while(current)
+    {
+        if(flags & GC_FAST ? ((gc->gcHashFN)(current->ptr) == k_hash) : ((gc->gcPtrCMP)(ptr, current->ptr)))
+        {
+            // redirect the gcMapNode_t chain around it, then destroy 
             if(parent)
-            parent->next = current->next;
+                parent->next = current->next;
             else
-            map->table[idx] = current->next;
-            if(flags & HM_DESTROY)
-            free(current->value);     // key can be freed from calling code; would be too messy to add that here  
+                gc->table[idx] = current->next;
+            
+         // 1234 if(flags & GC_DESTROY)            free(current->dtor);     
+        // ptr can be freed from calling code; would be too messy to add that here  
+            
             free(current);             // nodes are always malloc'ed  
 
             // perform resize and rehash if necessary  
-            if((map->size > 10) && (-- map->count) / (map->size << 1) < map->load_factor)
+            if((gc->size > 10) && (-- gc->count) / (gc->size << 1) < gc->load_factor)
             {
-                unsigned long int i;
+                size_t i;
 
-                size_t n_len = map->size >> 1;
-                hmNode_t** temp = calloc(n_len, sizeof(hmNode_t*));
+                size_t n_len = gc->size >> 1;
+                gcMapNode_t** temp = calloc(n_len, sizeof(gcMapNode_t*));
                 if(!temp)
                 {
-                    map->count --;
-                    return HM_ERR_ALLOC;
+                    gc->count --;
+                    return GC_ERR_ALLOC;
                 }
 
                 // for each element in the table 
-                for(i = 0; i < map->size; i ++)
+                for(i = 0; i < gc->size; i ++)
                 {
                     // traverse down the linked list 
-                    hmNode_t* current,
-                    * next;
+                    gcMapNode_t * current   ,
+                                * next      ;
 
                     // guard against empty elements  
-                    current = map->table[i];
+                    current = gc->table[i];
                     while(current)
                     {
-                        unsigned long int npos;
+                        size_t npos;
 
                         // prepare lookahead pointer 
                         next = current->next;
 
                         // rehash and copy each item  
-                        npos = (map->hash_fn(current->key)) % n_len;
+                        npos = (gc->gcHashFN(current->ptr)) % n_len;
                         current->next = temp[npos];
                         temp[npos] = current;
 
@@ -226,12 +242,12 @@ short int hash_map_drop(hashMap_t* map, void* key, unsigned short int flags)
                     }
                 }
 
-                free(map->table);
-                map->table = temp;
-                map->size = n_len;
+                free(gc->table) ;
+                gc->table = temp;
+                gc->size = n_len;
             }
 
-            // stop looking since hmNode_t was found  
+            // stop looking since gcMapNode_t was found  
             return 0;
         }
 
@@ -239,61 +255,65 @@ short int hash_map_drop(hashMap_t* map, void* key, unsigned short int flags)
         current = current->next;
     }
 
-    return HM_NODE_NOTFOUND;
+    return GC_NODE_NOTFOUND;
 }
 
-// destroys a hash map (does not touch pointed data) 
+// destroys a hash gc (does not touch pointed data) 
 
-void hash_map_destroy(hashMap_t* map, unsigned short int flags1,unsigned short int flags2 )
+void gcMapDestroy( gcMap_t* gc, unsigned short int flags1,unsigned short int flags2 )
 {
-    unsigned long int i;
-    hmNode_t* current,* next;
+    (void)flags1;
+    (void)flags2;
+    
+    size_t i;
+    gcMapNode_t* current,* next;
 
     // goes down each list, deleting all nodes  
-    for(i = 0; i < map->size; i++)
+    for(i = 0; i < gc->size; i++)
     {
-        current = map->table[i];
+        current = gc->table[i];
         while(current)
         {
             next = current->next;
 
-            if(flags1==HM_DESTROY) free(current->key);
-            if(flags2==HM_DESTROY) free(current->value);
-    
+            //if(flags1==GC_DESTROY) //free(current->ptr);
+            //if(flags2==GC_DESTROY) //free(current->dtor);
+
             free(current);
+            
             current = next;
         }
     }
 
     // deletes the table  
-    free(map->table);
+    free(gc->table);
 }
 
 
-// .............................................. gc map hash clear
+// .............................................. gc gc hash clear
 
-void gc_hash_map_destroy(hashMap_t* map, unsigned short int flags)
+void gcHashMapDestroy( gcMap_t* gc, unsigned short int flags)
 {
-    unsigned long int i;
-    hmNode_t    * current,* next;
+    size_t i;
+    gcMapNode_t    * current,* next;
 
     // goes down each list, deleting all nodes
     
-    for(i = 0; i < map->size; i++)
+    for(i = 0; i < gc->size; i++)
     {
-        current = map->table[i];
+        current = gc->table[i];
         while(current)
         {
             next = current->next;
-            if(flags & HM_DESTROY)
+            if(flags & GC_DESTROY)
             {
 
-                fCallBack_t *cb = (fCallBack_t*) &current->value ;
-
-                HM_DEBUG_PRINTF ( "gc_hash_map_destroy free ptr %p dtor %p %p\n"
-                                    ,current->key,current->value , *cb );
-
-                (*cb)(current->key);
+                gcDtorCallBack_t *cb = (gcDtorCallBack_t*) &current->dtor ;
+/*
+                gcMap_DEBUG_PRINTF ( "gcHashMapDestroy free ptr %p dtor %p %p\n"
+                                    ,current->ptr,current->dtor , *cb );
+*/
+                (*cb)(current->ptr);
             }
             free(current);
             current = next;
@@ -301,24 +321,36 @@ void gc_hash_map_destroy(hashMap_t* map, unsigned short int flags)
     }
 
     // deletes the table 
-    free(map->table);
+    free(gc->table);
 }
-
-
 
 // simple "hash" function (uses pointer as hash code) 
 
-unsigned long int hm_default_hash_fn(void* key)
+/* ############################################## 1234
+size_t gcDefaultHashFN(void* ptr)
 {
-    return (unsigned long int) key;
+    return (size_t) ptr;
+}
+#################################  */
+
+/*
+size_t gcDefaultHashFN(void* ptr)
+{
+    return ((uintptr_t)ptr) >> 3; // migliore della precedente
+}
+*/
+size_t gcDefaultHashFN(void* ptr)
+{
+    uintptr_t ad = (uintptr_t) ptr;
+    return (size_t) ((13*ad) ^ (ad >> 15));
 }
 
 // ......................................................     simple string hash function 
-
-unsigned long int hm_string_hash_fn(void* key)
+/*
+size_t gcMap_string_hash_fn(void* ptr)
 {
-    unsigned long int hash = 0;
-    char* string = key;
+    size_t hash = 0;
+    char* string = ptr;
 
     while(*string)
     {
@@ -331,11 +363,12 @@ unsigned long int hm_string_hash_fn(void* key)
 
     return hash;
 }
-
-unsigned long int hm_stringw_hash_fn(void* key)
+*/
+/*
+size_t gcMap_stringw_hash_fn(void* ptr)
 {
-    unsigned long int hash = 0;
-    wchar_t* string = key;
+    size_t hash = 0;
+    wchar_t* string = ptr;
 
     while(*string)
     {
@@ -348,33 +381,27 @@ unsigned long int hm_stringw_hash_fn(void* key)
 
     return hash;
 }
+*/
 
+// ......................................................    gcMap simple equality checker hash gc
 
-// ......................................................    HM simple equality checker hash map
-
-unsigned char  hm_default_key_comp(void* p1, void* p2)
+unsigned char  gcDefaultPtrCMP(void* p1, void* p2)
 {
     return p1 == p2;
 }
-
-unsigned char  hm_string_hash_key_comp(void* p1, void* p2)
+/*
+unsigned char  gcMap_string_hash_key_comp(void* p1, void* p2)
 {
     return !strcmp((char*)p1, (char*)p2);
 }
 
-unsigned char  hm_stringw_key_comp(void* p1, void* p2)
+unsigned char  gcMap_stringw_key_comp(void* p1, void* p2)
 {
     return !wcscmp((wchar_t*)p1, (wchar_t*)p2);
 }
-
+*/
 // ......................................................    GC simple equality checker  qsort
 
-int gc_int_key_comp (const void * a, const void * b)
-{
-  if ( *(int*)a <  *(int*)b ) return -1;
-  if ( *(int*)a == *(int*)b ) return 0;
-  return 1;
-}
 int gcCompareStrC ( const void * a, const void * b ) 
 {
     const char **pa = (const char **)a;
@@ -401,13 +428,26 @@ int gcComparepWStrC ( const void * a, const void * b )
     const wchar_t *pb = (const wchar_t *)b;
     return wcscmp(pa, pb);  
 }
+/*
+int gc_int_key_comp (const void * a, const void * b)
+{
+  if ( *(int*)a <  *(int*)b ) return -1;
+  if ( *(int*)a == *(int*)b ) return 0;
+  return 1;
+}
+*/
 int gcCompareInt(const void* a, const void* b)
 {
   int va = *(const int*) a;
   int vb = *(const int*) b;
   return (va > vb) - (va < vb);
 }
-
+/*
+int gcCompare_uint64_t(const uint64_t* a, const uint64_t* b)
+{
+  return (a > b) - (a < b);
+}
+*/
 int gcCompareFloat (const void * a, const void * b)
 {
   float fa = *(const float*) a;
@@ -447,217 +487,261 @@ void gcFreeDtor( void * ptr )
 
 // ....................................................................... gcallback gcFCloseDtor
 
-void gcFCloseDtor( FILE * ptr )
+void gcFCloseDtor( void * ptr )
 {
-    if (ptr!=NULL) fclose(ptr);
+    FILE* fptr = (FILE*)ptr;
+    
+    if (ptr!=NULL) fclose(fptr);
 }
 
 // ....................................................................... gcLocalStart
 
 void* gcLocalStart(void)
 {
-    gc_t *map = (hashMap_t*)malloc ( sizeof(hashMap_t) ) ;
-    hash_map_init ( map , hm_default_hash_fn , hm_default_key_comp , HM_DEFAULT_LEN , HM_DEFAULT_LOAD_FACTOR ) ;
+    gc_t *gc = ( gcMap_t*)malloc ( sizeof( gcMap_t) ) ;
     
-    return map ;
+    gcMapInit ( gc , gcDefaultHashFN , gcDefaultPtrCMP , GC_DEFAULT_LEN , GC_DEFAULT_LOAD_FACTOR ) ;
+    
+    return gc ;
 }
 
 // ....................................................................... gcLocalMalloc
 
-void* gcLocalMalloc(gc_t *map , size_t SIZE )
+void* gcLocalMalloc(gc_t *gc , size_t SIZE )
 {
+    if ( SIZE==0 ) return NULL ;
+
+    assert(SIZE>0);
+    
     void* ptr= (void*) malloc ( SIZE );
     
-    hash_map_put(   map, ptr , (void*)gcFreeDtor, HM_FAST);
-    HM_DEBUG_PRINTF ( "gcMalloc ptr==%p , dtor==%p \n",ptr,gcFreeDtor ) ;
+    gcMapPut(   gc, ptr , gcFreeDtor, GC_FAST );
+    
+   // gcMap_DEBUG_PRINTF ( "gcMalloc ptr==%p , dtor==%p \n",ptr,gcFreeDtor ) ;
     
     return ptr ;
 }
 
 // ....................................................................... gcLocalPush
 
-void* gcLocalPush(gc_t *map , void* ptr, size_t SIZE )
+void* gcLocalPush(gc_t *gc , void* ptr, size_t SIZE )
 {
-    hash_map_put( map, ptr , (void*)gcFreeDtor, HM_FAST );
+    (void)SIZE;
     
-    HM_DEBUG_PRINTF ( "gcPush ptr==%p , dtor==%p \n",ptr,gcFreeDtor ) ;
+    gcMapPut( gc, ptr , gcFreeDtor, GC_FAST );
+    
+    //gcMap_DEBUG_PRINTF ( "gcPush ptr==%p , dtor==%p \n",ptr,gcFreeDtor ) ;
     
     return ptr ;
 }
 
 // ....................................................................... gcLocalOpen
 
-FILE* gcLocalFileOpen(gc_t *map , const char* fileName , const char* flag)
+FILE* gcLocalFileOpen(gc_t *gc , const char* fileName , const char* flag)
 {
     FILE* ptr= fopen ( fileName , flag ) ;
-    hash_map_put(   map, (void*)ptr , (void*)gcFCloseDtor, HM_FAST);
-    HM_DEBUG_PRINTF ( "gcOpen ptr==%p , dtor==%p \n",ptr,gcFCloseDtor ) ;
+    
+    gcMapPut(   gc, (void*)ptr , gcFCloseDtor, GC_FAST );
+    
+    //gcMap_DEBUG_PRINTF ( "gcOpen ptr==%p , dtor==%p \n",ptr,gcFCloseDtor ) ;
     
     return ptr ;
 }
 
 // ....................................................................... gcLocalFree
 
-void* gcLocalFree(gc_t *map , void *ptr)
+void* gcLocalFree(gc_t *gc , void *ptr)
 {
     if (ptr==NULL)
     {
-            HM_DEBUG_PRINTF ( "gcFree ptr==NULL \n") ;
+            //gcMap_DEBUG_PRINTF ( "gcFree ptr==NULL \n") ;
             return NULL ;
     } ;
     // recupera il distruttore
-   void *dtor = hash_map_get ( map , ptr , HM_FAST ) ;
+   gcDtorCallBack_t *dtor = gcMapGet ( gc , ptr , GC_FAST );
    
    // chiama il distrutore
    if (dtor!=NULL)
    {
-        fCallBack_t *cb = (fCallBack_t*) &dtor ;
+        //gcDtorCallBack_t *cb = (gcDtorCallBack_t*) &dtor ;
 
-        (*cb)(ptr);
+        (*dtor)(ptr);
 
-        HM_DEBUG_PRINTF ( "gcFree ptr==%p , dtor==%p %p \n",ptr,dtor,*cb ) ;
+        //gcMap_DEBUG_PRINTF ( "gcFree ptr==%p , dtor==%p %p \n",ptr,dtor,*cb ) ;
    }
    else
    {
-        HM_DEBUG_PRINTF ( "gcFree dtor==NULL \n") ;
+        //gcMap_DEBUG_PRINTF ( "gcFree dtor==NULL \n") ;
         
         return NULL ;  
    }
    
    // libera lo spazio
-   hash_map_drop(   map, ptr ,  HM_NORMAL);
+   gcMapDrop(   gc, ptr ,  GC_FAST );
    
    return ptr;
 }
 
 // ....................................................................... gcLocalPop
 
-void* gcLocalPop(gc_t *map , void *ptr)
+void* gcLocalPop(gc_t *gc , void *ptr)
 {
     if (ptr==NULL)
     {
-        HM_DEBUG_PRINTF ( "gcPop ptr==NULL \n") ;
+        //gcMap_DEBUG_PRINTF ( "gcPop ptr==NULL \n") ;
         return NULL ;
     } ;
     
     // recupera il distruttore
-   void *dtor = hash_map_get ( map , ptr , HM_FAST ) ;
+   void *dtor = gcMapGet ( gc , ptr , GC_FAST );
    
    // chiama il distrutore
    if (dtor!=NULL)
    {
-       fCallBack_t *cb = (fCallBack_t*) &dtor ;
+       gcDtorCallBack_t *cb = (gcDtorCallBack_t*) &dtor ;
 
-       HM_DEBUG_PRINTF ( "gcPop ptr==%p , dtor==%p %p \n",ptr,dtor,*cb ) ;
+        *cb=*cb;
+        
+       //gcMap_DEBUG_PRINTF ( "gcPop ptr==%p , dtor==%p %p \n",ptr,dtor,*cb ) ;
    }
    else
    {
-        HM_DEBUG_PRINTF ( "gcPop dtor==NULL \n") ;
+        //gcMap_DEBUG_PRINTF ( "gcPop dtor==NULL \n") ;
         
         return NULL ;  
    }
    // libera lo spazio
-   hash_map_drop( map, ptr ,  HM_NORMAL );
+   gcMapDrop( gc, ptr ,  GC_FAST );
    
    return ptr ;
 }
 
 // ....................................................................... gcLocalStop
 
-void* gcLocalStop(gc_t *map )
+void* gcLocalStop(gc_t *gc )
 {
-    gc_hash_map_destroy(map,HM_DESTROY);
-    free(map);
-    return map=NULL;
+    gcHashMapDestroy(gc,GC_DESTROY);
+    
+    if ( gc!=NULL) free(gc);
+    
+    return gc=NULL;
 }
-
 
 // ....................................................................... gcLocalRealloc
 
-void* gcLocalRealloc( gc_t *map, void* P , size_t N )
+void* gcLocalRealloc( gc_t *gc, void* ptr , size_t SIZE )
 {
-    if (P==NULL) return gcLocalMalloc(map,N);
 
-    void* old=P;
-    P = (void*) realloc ( P,N ) ;
+    //assert(SIZE!=0); //  realloc(array, 0) is not equivalent to free(array). 
+    if (SIZE==0)
+    {
+        gcFree(ptr);
+        return ptr=NULL;
+    }
+    
+    assert(SIZE>0);
+    
+    if (ptr==NULL) return gcLocalMalloc(gc,SIZE);
+
+    void* old=ptr;
+    
+    ptr = (void*) realloc ( ptr,SIZE ) ;
 
     //gcPop(old);
-   
-    gcLocalPop ( map,old ) ;
-   
-    //gcPush(P) ;
-   
-    gcLocalPush ( map,P,N ) ;
-   
-    assert ( P != NULL ) ;
-   
-    return P ;
-}
 
-// ....................................................................... hmNew
-
-void* hmNew(void)
-{
-    gc_t *map = (hashMap_t*)malloc ( sizeof(hashMap_t) ) ;
+    if (ptr!=NULL)
+    {
+        gcLocalPop ( gc,old ) ;
+       
+        //gcPush(ptr) ;
+       
+        gcLocalPush ( gc,ptr,SIZE ) ;
+       
+        assert ( ptr != NULL ) ;
+    }
     
-    hash_map_init ( map , hm_default_hash_fn , hm_default_key_comp , HM_DEFAULT_LEN , HM_DEFAULT_LOAD_FACTOR ) ;
+    return ptr ;
+}
+
+// ....................................................................... gcMapNew
+
+void* gcMapNew(void)
+{
+    gc_t *gc = ( gcMap_t*)malloc ( sizeof( gcMap_t) ) ;
     
-    return map ;
+    assert(gc!=NULL);
+    
+    gcMapInit ( gc , gcDefaultHashFN , gcDefaultPtrCMP , GC_DEFAULT_LEN , GC_DEFAULT_LOAD_FACTOR ) ;
+    
+    return gc ;
 }
 
-// ....................................................................... hmDelete
+// ....................................................................... gcMapDelete
 
-void hmDelete( hashMap_t *hm )
+void gcMapDelete( gcMap_t *gcMap )
 {
-    hash_map_destroy(hm,HM_noDESTROY,HM_noDESTROY);
-    free(hm);
+    gcMapDestroy(gcMap,GC_NODESTROY,GC_NODESTROY);
+    
+    if (gcMap!=NULL) free( gcMap );
 }
-void hmDeleteKey( hashMap_t *hm )
+/*
+void gcMapDeleteKey( gcMap_t *gcMap )
 {
-    hash_map_destroy(hm,HM_DESTROY,HM_noDESTROY);
-    free(hm);
+    gcMapDestroy(gcMap,GC_DESTROY,GC_NODESTROY);
+    free( gcMap );
 }
-void hmDeleteKeyValue( hashMap_t *hm )
+void gcMapDeleteKeyValue( gcMap_t *gcMap )
 {
-    hash_map_destroy(hm,HM_DESTROY,HM_DESTROY);
-    free(hm);
+    gcMapDestroy(gcMap,GC_DESTROY,GC_DESTROY);
+    
+    free( gcMap );
 }
-
+*/
 // ......................................................     hash clear
- 
-hashMap_t* hm_hash_map_clear(hashMap_t* hm)
+/* 
+gcMap_t* gcMap_hash_map_clear( gcMap_t* gcMap)
 {
-    void * hmKeyComp     = hm->key_comp ;
-    void * hmHash        = hm->hash_fn  ;
-    hmDelete(hm);
+    void * gcMapPtrCmp     = (void*)gcMap->gcPtrCMP ;
+    void * gcMapHash        = (void*)gcMap->gcHashFN  ;
+    
+    gcMapDelete( gcMap );
 
-    hm   = hmNew();
+    gcMap   = gcMapNew();
     
-    hm->hash_fn     = hmKeyComp ;
-    hm->key_comp    = hmHash ;
+    gcMap->gcHashFN    = gcMapPtrCmp ;
+    gcMap->gcPtrCMP    = gcMapHash    ;
     
-    return hm ;
+    return gcMap ;
 }
+*/
 
-void* hmFind( hashMap_t *hm , void* key )
+void* gcMapFind( gcMap_t *gcMap , void* ptr )
 {
-    return hash_map_get( hm , key , HM_FAST ) ;
+    return gcMapGet( gcMap , ptr , GC_FAST );
 }
 
 // ....................................................................... gc Dup
 
-char* gcStrLocalDup( gc_t* gc,char* str)
+char* gcStrLocalDup( gc_t* gc, char* str)
 {
-    char *tmp=strdup(str);
-    hash_map_put(   gc, (void*)tmp , (void*)gcFreeDtor, HM_FAST);
-    return tmp ;
+    char* strnew = strdup(str);
+    
+    //char* strnew = gcMalloc(len+1);
+    
+    //strncpy( strnew,str,len+1 ) ;
+
+    gcMapPut(  gc, (void*)strnew , gcFreeDtor, GC_FAST );
+    
+    return strnew ;
 }
 
 wchar_t* gcWcsLocalDup( gc_t* gc,wchar_t* str)
 {
-    wchar_t *tmp=wcsdup(str);
-    hash_map_put(   gc, (void*)tmp , (void*)gcFreeDtor, HM_FAST);
-    return tmp ;
+    wchar_t* strnew=wcsdup(str);
+
+    gcMapPut(   gc, (void*)strnew , gcFreeDtor, GC_FAST );
+    
+    return strnew ;
 }
 
 // ................................................................... intDup
@@ -665,7 +749,9 @@ wchar_t* gcWcsLocalDup( gc_t* gc,wchar_t* str)
 int* gcIntLocalDup( gc_t* gc,int val)
 {
     int* p=(int*)  gcMalloc ( sizeof(int) );
+    
     *p=val;
+    
     return p ;
 }
 
@@ -674,43 +760,40 @@ int* gcIntLocalDup( gc_t* gc,int val)
 double* gcDoubleLocalDup( gc_t* gc, double val )  
 {
     double* p = (double*) gcMalloc ( sizeof(double) );
+    
     *p=val;
+    
     return p ;
 }
 
-// ........................................................................ gc hash map iterator
-
-void hmIterator(hashMap_t* map , void* (*cb)(void*) )
+// ........................................................................ gc hash gc iterator
+/*
+void gcMapIterator( gcMap_t* gc , void* (*cb)(void*) )
 {
-    unsigned long int i;
-    hmNode_t* current,* next;
+    size_t i;
+    gcMapNode_t* current,* next;
 
-    for(i = 0; i < map->size; i++)    // iterate all node
+    for(i = 0; i < gc->size; i++)    // iterate all node
     {
-        current = map->table[i];
+        current = gc->table[i];
         while(current)
         {
-            (*cb)(current->value);
+            (*cb)(current->dtor);
             next = current->next;
             current = next;
         }
     }
 
 }
-
-// ........................................................................ test hm
-
-void* hmPrintValueCB( void * value )
+*/
+// ........................................................................ test gcMap
+/*
+void* gcMapPrintValueCB( void * dtor )
 {
-    printf ( "{{{%p}}}",value) ;
+    printf ( "{{{%p}}}",dtor) ;
     return NULL ;
 }
-
-#ifdef __GNUC__
-#pragma GCC diagnostic pop
-#pragma GCC diagnostic pop
-#pragma GCC diagnostic pop
-#endif
+*/
 
 /**/
 

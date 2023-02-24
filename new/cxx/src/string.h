@@ -12,10 +12,10 @@ size_t      strmblen    (const char*    strarg) ;
  
 // ........................................... cnv vIn <-> s8
 
-/*
+
 char*       convS16toMBS( char16_t * pt ) ;
 char*       convS32toMBS( char32_t * pt ) ;
-*/
+
 
 wchar_t*    cnvS8toWS     	(char *    		vIn	) ;
 char*       cnvWStoS8     	(wchar_t* 		vIn	) ;

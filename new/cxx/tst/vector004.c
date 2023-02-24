@@ -61,7 +61,9 @@ int main ( void )
      
     vectorSort(vector_v1_d,v1,gcCompareStrC);
 
-    for ( itVector(v1) it = vectorBegin(v1); it<vectorEnd(v1); it++)   printf ( "[%s]" ,*it ) ; 
+    for ( itVector(v1) it = vectorBegin(v1); it<vectorEnd(v1); it++)   printf ( "[%s]" ,*it ) 
+        ; 
+    
     printf ( "\n" ); 
 
     // ...................................... stop

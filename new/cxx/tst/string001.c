@@ -35,6 +35,7 @@ int main()
 	fprintf ( stdout,"(%s)\n",cnvI16toS8(SHRT_MAX)  ) ;
 
     char* x = cnvWStoS8(L"你好吗") ;
+    
     fprintf ( stdout,"[%s]\n",x ) ;
 
     printf("\nthat's al folks ! (  string001.c ) \n");

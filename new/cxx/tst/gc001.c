@@ -13,15 +13,17 @@ int main(void)
     char* c1 = (char*) gcMalloc ( 10 ) ;
     
     FILE* f1 = gcFileOpen ( "deleteme.txt" , "w+" ) ;
-   
+ 
     char *s = gcStrDup("claudio daffra");
-    
+
+    printf ( "strdup %s \n",s ) ;
+
     c1=gcRealloc( c1, 100 );
     c1=gcRealloc( c1, 1   );
-    
+
 	gcFree( c1 ) ;
 	gcFree( f1 ) ;
-
+ 
 	//
 
     gcStop();

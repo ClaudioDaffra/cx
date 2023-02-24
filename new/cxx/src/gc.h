@@ -1,5 +1,7 @@
-#ifndef HASH_MAP
-#define HASH_MAP
+#ifndef CD_GARBAGE_COLLECTOR
+#define CD_GARBAGE_COLLECTOR
+
+// https://github.com/peterr-s/hash_map
 
 #include <stdio.h>
 #include <stdint.h>
@@ -9,68 +11,64 @@
 #include <wchar.h>
 
 // *****************
-// typedef
+// GARBAGE_COLLECTOR
 // *****************
 
-typedef void (*fCallBack_t)(void*ptr) ;
+#define GC_ERR_ALLOC                 1
+#define GC_NODE_NOTFOUND             2
+#define GC_DEFAULT_LOAD_FACTOR       0.75
+#define GC_DEFAULT_LEN               10
+#define GC_NORMAL                    0
+#define GC_FAST                      1
+#define GC_DESTROY                   2
+#define GC_NODESTROY                 3
 
-// *****************
-// HASH MAP ROOT
-// *****************
+//#define gcMap_DEBUG_PRINTF(...)        //__VA_ARGS__
+//#define gcMap_DEBUG_PRINTF(...)        __VA_ARGS__
 
-#define HM_ERR_ALLOC                 1
-#define HM_NODE_NOTFOUND             2
-#define HM_DEFAULT_LOAD_FACTOR       0.75
-#define HM_DEFAULT_LEN               10
-#define HM_NORMAL                    0
-#define HM_FAST                      1
-#define HM_DESTROY                   2
-#define HM_noDESTROY                 3
+typedef void (*gcDtorCallBack_t)(void*ptr) ;
 
-#define HM_DEBUG_PRINTF(...)        //__VA_ARGS__
-//#define HM_DEBUG_PRINTF(...)        __VA_ARGS__
-
-struct hmNode_s
+struct gcNode_s
 {
-    void*            key;
-    void*            value;
-    struct hmNode_s* next;
+    void*                       ptr ;
+    gcDtorCallBack_t            dtor;
+    struct gcNode_s*            next;
 };
 
-typedef struct hmNode_s hmNode_t;
+typedef struct gcNode_s gcMapNode_t;
 
-struct hashMap_s
+struct gcMap_s
 {
-    hmNode_t**              table                               ;
-    unsigned long int       (*hash_fn)  (void* key)             ;
-    unsigned char           (*key_comp) (void* p1, void* p2)    ;
-    unsigned long int       size                                ;
-    float                   load_factor                         ;
-    unsigned long int       count                               ;
+    gcMapNode_t**   table                               ;
+    size_t          (*gcHashFN)  (void* ptr)            ;
+    unsigned char   (*gcPtrCMP)  (void* p1, void* p2)   ;
+    size_t          size                                ;
+    float           load_factor                         ;
+    size_t          count                               ;
 };
 
-typedef struct hashMap_s hashMap_t;
+typedef struct gcMap_s gcMap_t;
 
-short int             hash_map_init       (hashMap_t* map, unsigned long int(* hash_fn)(void* key), unsigned char (* key_comp)(void* p1, void* p2), unsigned long int start_len, float load_factor);
-void                  hash_map_destroy    (hashMap_t* map, unsigned short int flags1,unsigned short int flags2 );
-short int             hash_map_put        (hashMap_t* map, void* key, void* value, unsigned short int flags);
-void*                 hash_map_get        (hashMap_t* map, void* key, unsigned short int flags);
-short int             hash_map_drop       (hashMap_t* map, void* key, unsigned short int flags);
+short int             gcMapInit       ( gcMap_t* gc, size_t(* gcHashFN)(void* ptr), unsigned char (* gcPtrCMP)(void* p1, void* p2), size_t start_len, float load_factor);
+void                  gcMapDestroy    ( gcMap_t* gc, unsigned short int flags1,unsigned short int flags2 );
+short int             gcMapPut        ( gcMap_t* gc, void* ptr, gcDtorCallBack_t dtor, unsigned short int flags);
+gcDtorCallBack_t*     gcMapGet        ( gcMap_t* gc, void* ptr, unsigned short int flags);
+short int             gcMapDrop       ( gcMap_t* gc, void* ptr, unsigned short int flags);
 
-unsigned long int     hm_default_hash_fn       (void* key);
-unsigned long int     hm_string_hash_fn        (void* key);
-unsigned long int     hm_stringw_hash_fn       (void* key);
+size_t     gcDefaultHashFN       (void* ptr);
+//size_t     gcMap_string_hash_fn        (void* ptr);
+//size_t     gcMap_stringw_hash_fn       (void* ptr);
 
-unsigned char         hm_default_key_comp       (void* p1, void* p2);
-#define               hmCompareDefault          hm_default_key_comp
+unsigned char         gcDefaultPtrCMP       (void* p1, void* p2);
+#define               gcCompareDefault          gcDefaultPtrCMP
 
-unsigned char         hm_string_hash_key_comp   (void* p1, void* p2);
-#define               hmCompareString            hm_string_hash_key_comp
+/*
+unsigned char         gcMap_string_hash_key_comp   (void* p1, void* p2);
+#define               gcMapCompareString            gcMap_string_hash_key_comp
 
-unsigned char         hm_stringw_key_comp       (void* p1, void* p2);
-#define               hmCompareStringw           hm_stringw_hash_key_comp
-
-//
+unsigned char         gcMap_stringw_key_comp       (void* p1, void* p2);
+#define               gcMapCompareStringw           gcMap_stringw_hash_key_comp
+*/
 
 int                 gcCompareStrC               ( const void * a, const void * b ) ;
 int                 gcCompareWStrC              ( const void * a, const void * b ) ;
@@ -84,42 +82,39 @@ int                 gcCompareDoubleAsInt        ( const void * a, const void * b
 
 //
 
-short int hash_map_init    (
-    hashMap_t* map, 
-    unsigned long int           (* hash_fn)(void* key)                  , 
-    unsigned char               (* key_comp)(void* p1, void* p2)        , 
-    unsigned long int           start_len                               , 
-    float                       load_factor
+short int gcMapInit    (
+    gcMap_t*        gc, 
+    size_t          (* gcHashFN)(void* ptr)                  , 
+    unsigned char   (* gcPtrCMP)(void* p1, void* p2)         , 
+    size_t          start_len                                , 
+    float           load_factor
 ) ;
 
-short int            hash_map_put                (hashMap_t* map, void* key, void* value, unsigned short int flags) ;
-void*                hash_map_get                (hashMap_t* map, void* key, unsigned short int flags) ;
-void*                hash_map_at_address         (hashMap_t* map, void* key, unsigned short int flags) ;
-short int            hash_map_drop               (hashMap_t* map, void* key, unsigned short int flags) ;
-void                 hash_map_destroy            (hashMap_t* map, unsigned short int flags1,unsigned short int flags2 ) ;
+void*                gcMapAtAddress    ( gcMap_t* gc, void* ptr, unsigned short int flags) ;
 
 // *****************
 // garbage collector
 // *****************
 
-typedef hashMap_t gc_t ;
+typedef gcMap_t gc_t ;
 
-gc_t *gc ;
+extern gc_t *gc ;
 
 #define gcStart(...)    gc=gcLocalStart(/*__VA_ARGS__*/)
 #define gcStop(...)     gcLocalStop(gc/*__VA_ARGS__*/)
 
-void                 gc_hash_map_destroy         ( hashMap_t* map, unsigned short int flags) ;
+void                 gcHashMapDestroy         ( gcMap_t* gc, unsigned short int flags) ;
+
 void                 gcFreeDtor                  ( void * ptr ) ;
-void                 gcFCloseDtor                ( FILE * ptr ) ;
-void*                gcLocalStart                ( void) ;
-void*                gcLocalMalloc               ( gc_t *map , size_t SIZE ) ;
-void*                gcLocalPush                 ( gc_t *map , void* ptr, size_t SIZE ) ;
-FILE*                gcLocalFileOpen             ( gc_t *map , const char* fileName , const char* flag) ;
-void*                gcLocalFree                 ( gc_t *map , void *ptr) ;
-void*                gcLocalPop                  ( gc_t *map , void *ptr) ;
-void*                gcLocalStop                 ( gc_t *map ) ;
-void*                gcLocalRealloc              ( gc_t *map, void* P , size_t N ) ;
+void                 gcFCloseDtor                ( void * ptr ) ;
+void*                gcLocalStart                ( void ) ;
+void*                gcLocalMalloc               ( gc_t *gc , size_t SIZE ) ;
+void*                gcLocalPush                 ( gc_t *gc , void* ptr, size_t SIZE ) ;
+FILE*                gcLocalFileOpen             ( gc_t *gc , const char* fileName , const char* flag) ;
+void*                gcLocalFree                 ( gc_t *gc , void *ptr ) ;
+void*                gcLocalPop                  ( gc_t *gc , void *ptr ) ;
+void*                gcLocalStop                 ( gc_t *gc ) ;
+void*                gcLocalRealloc              ( gc_t *gc, void* P , size_t N ) ;
 
 char*                gcStrLocalDup               ( gc_t* gc,char* str) ;
 wchar_t*             gcWcsLocalDup               ( gc_t* gc,wchar_t* str) ;
@@ -132,15 +127,23 @@ double*              gcDoubleLocalDup            ( gc_t* gc,double val ) ;
 #define gcDoubleDup(STR)                          gcDoubleLocalDup(gc,STR)
 
 #define gcMalloc(SIZE)                            gcLocalMalloc(gc,SIZE)
+
 #define gcCalloc(SIZEOF,SIZE)                     gcMalloc(SIZEOF*SIZE);
 #define gcLocalCalloc(GC,SIZEOF,SIZE)             gcLocalMalloc(GC,SIZEOF*SIZE);
 
-#define gcFileOpen(FILENAME,FILEATTR)             gcLocalFileOpen(gc,FILENAME,FILEATTR)
 #define gcRealloc(PTR,SIZE)                       gcLocalRealloc(gc,PTR,SIZE)
+
 #define gcFree(PTR)                               gcLocalFree(gc,(void*)PTR)
 
-#define gcFileLocalClose(MAP,PTR)                 gcLocalFree(MAP,(void*)PTR)
+#define gcFileOpen(FILENAME,FILEATTR)             gcLocalFileOpen(gc,FILENAME,FILEATTR)
+
+#define gcFileLocalClose(GC,PTR)                  gcLocalFree(GC,(void*)PTR)
 #define gcFileClose(PTR)                          gcLocalFree(gc,(void*)PTR)
+
+
+int gcCompareInt(const void* a, const void* b) ;
+
+//int gcCompare_uint64_t(const uint64_t* a, const uint64_t* b) ;
 
 #endif
 

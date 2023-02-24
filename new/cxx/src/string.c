@@ -92,13 +92,12 @@ char* convS16toMBS( char16_t * pt )
 	{
 		length = c16rtomb(buffer,*pt,&mbs);
 		if ((length==0)||(length>cdMB_CUR_MAX)) break ;
-		for ( i=0;i<length;i++) stringPushBack ( mbstemp , buffer[i] ) ;
+		//for ( i=0;i<length;i++) stringPushBack ( mbstemp , buffer[i] ) ;
 		++pt ;
 	}
     return mbstemp.data ;
 }
-*/
-/*
+
 char* convS32toMBS( char32_t * pt )
 {
 	char buffer[cdMB_CUR_MAX];
@@ -120,6 +119,7 @@ char* convS32toMBS( char32_t * pt )
     return mbstemp.data ;
 }
 */
+
 // ........................................................... convert S8 <-> MB ( WINDOWS ) and viceversa
 
 // https://stackoverflow.com/questions/42793735/

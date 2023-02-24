@@ -3,6 +3,7 @@
 
 /*
 	// cls       &  cl  src\gc.c src\stdio.c src\string.c tst\string003.c    /Febin\x.exe /utf-8    /WX
+    
 	// clear    ;   gcc src/gc.c src/stdio.c src/string.c tst/string003.c    -o bin/x                -Wall   -Wextra -pedantic
 */
 
@@ -56,6 +57,7 @@ int main()
     printf ("\n");
     
     stringClear(s1);
+    
     printf ( "s1 clear [%s] len(%zu).\n",s1.data,strlen(s1.data));
 
     //.......................... from char*
@@ -66,6 +68,7 @@ int main()
         ,s1.data,stringSize(s1),stringCapacity(s1),stringEmpty(s1),stringLen(s1) ) ;
 
     const char* temp = "Claudio Daffra" ;
+    
     stringFromS8 ( s1 , temp ) ;
 
     printf ( "[s1] %s -> size %zu capacity %zu empty %u len(%zu)\n"

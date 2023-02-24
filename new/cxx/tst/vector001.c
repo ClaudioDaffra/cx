@@ -98,7 +98,9 @@ int main ( void )
     // .................................... binary search
     
     vector_v1_d key = 80 ;
+    
     vector_v1_d* value = (vector_v1_d*)vectorBinarySearch(vector_v1_d,v1,gcCompareInt,key ) ;
+    
     if ( value != NULL ) printf ( "found %d in vector.\n" ,key) ; else printf ( "not found %d in vector.\n" ,key);
 
     // .................................... insert erase eraseN

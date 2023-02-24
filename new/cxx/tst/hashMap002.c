@@ -1,39 +1,36 @@
-#include "../src/gc.h"
-#include "../src/hashMap.h"
+#include "../src/cxx.h"
 
 
-// clear    ; gcc src/gc.c tst/hashMap002.c     -o bin/x    -Wall -Wextra  -pedantic
-// cls      & cl src\gc.c  tst\hashMap002.c     /Febin\x.exe   /WX /utf-8
+// gcc src/gc.c src/hashMap.c tst/hashMap002.c -o x  -Wall -pedantic -Wextra
 
-int main(void)
+int main ( void ) 
 {
     gcStart();
-    
-        hashMap_t       *hm = hmNew();
-        
-        hm->hash_fn     = hm_stringw_hash_fn ;
-        hm->key_comp    = hm_stringw_key_comp ;
-        
-        wchar_t *key = gcWcsDup(L"claudio") ;
-      
-        hmInsert(   hm,  key      , (void*)0xff );
-        hmInsert(   hm, L"daffra" , (void*)0x16 ); 
 
-        void* res=NULL;
-        
-        res = hmFind( hm , L"claudio" );
-        if (res!=NULL) wprintf ( L" claudio -> %p\n ", res );   
-        
-        res = hmFind( hm , L"barbara" );
-        
-        if (res!=NULL) wprintf ( L" barbara -> %p\n ", res );   
-        else wprintf ( L" not found barbara -> %p\n ", NULL );
+    hashMap_t    *hm = gcMalloc( sizeof(hashMap_t) )  ;
 
-        hmDelete(hm);
+    hashMapInit( hm , hmPtrHash, hmPtrEq, HM_DEFAULT_LEN, HM_DEFAULT_LOAD_FACTOR);
+
+    hashMapPut        ( hm, (void*)1 , (void*)101, HM_FAST );
+    hashMapPut        ( hm, (void*)2 , (void*)202, HM_FAST );
+    hashMapPut        ( hm, (void*)3 , (void*)303, HM_FAST );
+    hashMapPut        ( hm, (void*)4 , (void*)303, HM_FAST );
+
+    void* value=NULL;
+
+    value = hashMapGet ( hm, (void*)3, HM_FAST );
+    printf ( "\nfound si [%d]",(int)value ) ;
+ 
+    hashMapDrop       (hm, (void*)3, HM_FAST);
+
+    value = hashMapGet ( hm, (void*)3, HM_FAST );
+    printf ( "\nfound no [%d]",(int)value ) ;
+ 
+    hashMapDestroy    (hm, HM_FAST);
+
+    printf ( "\n" ) ;
 
     gcStop();
     
-    wprintf ( L"\n") ;
-    
-    return 0;
+ return 0 ;
 }

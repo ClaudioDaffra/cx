@@ -1,7 +1,8 @@
 
 #include "../src/cxx.h"
 
-// clear ; gcc src/gc.c src/string.c src/stdio.c tst/stdio001.c -o x -Wall -pedantic -Wextra
+
+// clear ; gcc src/gc.c src/string.c src/stdio.c tst/stdio000.c -o x -Wall -pedantic -Wextra
 
 int main ( void ) 
 {
@@ -17,19 +18,19 @@ int main ( void )
     
     if ( pFileInput== NULL )
     {
-        fprintf ( stdout , "?! File Not FOund." ) ;
+        fwprintf ( stdout , L"?! File Not FOund." ) ;
         exit(-1);
     }
-    fprintf ( stdout, "reading file : \n" );
+    fwprintf ( stdout, L"reading file : \n" );
     
     wchar_t wc;
     
    while (( wc = fgetwc(pFileInput)) != _WEOF)
    {
-      fprintf(stdout, "[%lc]", wc);
+      fwprintf(stdout, L"[%lc]", wc);
    }
 
-    fprintf ( stdout,"\n" );
+    fwprintf ( stdout,L"\n" );
     
     gcFileClose(pFileInput);
     

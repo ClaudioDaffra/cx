@@ -86,13 +86,13 @@ int main ( void )
 
     // .................................... vector of vector
         
-    // vectorType(float);                   // vector_float_t
+    // vectorType(float);                  // vector_float_t
  
-    vectorTypeDef( float        , x1 ) ;    // vector_x1_t
+    vectorTypeDef( float       , x1 ) ;    // vector_x1_t   -> vettore di float
     
-    vectorTypeDef( vector_x1_t , x2 ) ;    // vector_x2_t 
+    vectorTypeDef( vector_x1_t , x2 ) ;    // vector_x2_t   ->  vettore di vettore di float
 
-    vectorTypeDef( vector_x2_t , x3 ) ;    // vector_x3_t 
+    vectorTypeDef( vector_x2_t , x3 ) ;    // vector_x3_t   ->  vettore di vettore di vettore di float 
  
     // define vector contain vector
     

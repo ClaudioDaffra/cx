@@ -4,7 +4,7 @@
 
 // cls      &   cl  src\gc.c src\stdio.c src\string.c tst\string000.c    /Febin\x.exe     /utf-8 /WX
 
-// clear    ;   gcc src/gc.c src/stdio.c src/string.c tst/string000.c    -o bin/x -Wall   -Wextra -pedantic
+// clear    ;   gcc src/gc.c src/string.c tst/string000.c    -o bin/x -Wall   -Wextra -pedantic
 
  
 
@@ -17,39 +17,40 @@ int main ( void )
 {
     gcStart();
      
-    stdio_t stdio ;
- 
-    stdioSetUTF8( &stdio );
 
     //
 
     fwprintf ( stdout , L" - WIDE\n");    
 
-    stdioPutw ( &stdio , L"L - claudio 1\n" , "" );
+    fwprintf ( stdout , L"L - claudio 1\n" , "" );
 
-    stdioPutw( &stdio ,L"L - claudio 2\n","" );
+    fwprintf( stdout ,  L"L - claudio 2\n","" );
     
-    fprintf ( stdout , "L - %ls" , L"claudio 3\n" ) ;
-
-    stdioPutw ( &stdio , L"الْأَبْجَدِيَّة الْعَرَبِيَّة‎\n" );
+    fprintf ( stdout ,  "L - %ls" , L"claudio 3\n" ) ;
+/*
+    fwprintf ( stdout , L"الْأَبْجَدِيَّة الْعَرَبِيَّة‎\n" );
 
     fwprintf ( stdout , L" - MBS\n");    
     
-    stdioPuts ( &stdio , "s - 2claudio\n" );
-    stdioPuts ( &stdio , "2الْأَبْجَدِيَّة الْعَرَبِيَّةn" );
+    fwprintf ( stdout , "s - 2claudio\n" );
+    
+    fwprintf ( stdout , "2الْأَبْجَدِيَّة الْعَرَبِيَّةn" );
 
     fwprintf ( stdout , L" - WIDE\n");    
     
-    stdioPutw ( &stdio , L"tián 田 \"field\", jiāng 畕 \n" );
-    stdioPutw ( &stdio , L"الْأَبْجَدِيَّة الْعَرَبِيَّ//ة‎ \n" );    
+    fwprintf ( stdout , L"tián 田 \"field\", jiāng 畕 \n" );
+    
+    fwprintf ( stdout , L"الْأَبْجَدِيَّة الْعَرَبِيَّ//ة‎ \n" );    
 
-    stdioPutw ( &stdio , L"الْأَبْجَدِيَّة الْعَرَبِيَّة‎ \n" );
-    stdioPutw ( &stdio , L"⟨б⟩, ⟨в⟩, ⟨г⟩, ⟨д⟩, ⟨ж⟩, ⟨з⟩, ⟨к⟩, ⟨л⟩, ⟨м⟩, ⟨н⟩, ⟨п⟩, ⟨р⟩, ⟨с⟩, ⟨т⟩, ⟨ф⟩, ⟨х⟩, ⟨ц⟩, ⟨ч⟩, ⟨ш⟩, ⟨щ⟩)‎ \n" );
+    fwprintf ( stdout , L"الْأَبْجَدِيَّة الْعَرَبِيَّة‎ \n" );
+    
+    fwprintf ( stdout , L"⟨б⟩, ⟨в⟩, ⟨г⟩, ⟨д⟩, ⟨ж⟩, ⟨з⟩, ⟨к⟩, ⟨л⟩, ⟨м⟩, ⟨н⟩, ⟨п⟩, ⟨р⟩, ⟨с⟩, ⟨т⟩, ⟨ф⟩, ⟨х⟩, ⟨ц⟩, ⟨ч⟩, ⟨ш⟩, ⟨щ⟩)‎ \n" );
 
-    stdioPutw ( &stdio , L"א‎ב‎ג‎ד‎ה‎ו‎ז‎ח‎ט‎י‎ך‎\n" );    
-    stdioPutw ( &stdio , L"èéò@ç°§£€\n" );    
+    fwprintf ( stdout , L"א‎ב‎ג‎ד‎ה‎ו‎ז‎ח‎ט‎י‎ך‎\n" );    
+    
+    fwprintf ( stdout , L"èéò@ç°§£€\n" );    
 
-    stdioPutw ( &stdio , L"èéò@ç°§£€\n" );
+    fwprintf ( stdout , L"èéò@ç°§£€\n" );
 
     // convert
     
@@ -73,9 +74,10 @@ int main ( void )
             
 
     char* x = cnvWStoS8(L"你好吗") ;
-    stdioPuts ( &stdio ,x ) ; stdioPuts ( &stdio ,"\n" ) ;
+    
+    fwprintf ( stdout ,x ) ; fwprintf ( stdout ,"\n" ) ;
 
-    stdioPuts ( &stdio, "\nthat's al folks !\n");
+    fwprintf ( stdout, "\nthat's al folks !\n");
     
 
 
@@ -88,36 +90,36 @@ int main ( void )
     wstringAlloc(s1,8);
     
     wstringFormat( s1,L"%f\n" ,1.2 ) ;
-    stdioPutw( &stdio , s1.data ) ;
+    fwprintf( stdout , s1.data ) ;
     
-    stdioPrintw ( &stdio , L"%f\n" ,1.21 ) ;
+    fwprintf ( stdout , L"%f\n" ,1.21 ) ;
     
-    stdioPrints ( &stdio ,  "%f\n" ,5.43 ) ;
-    stdioPrints ( &stdio ,  "ok\n" ) ;
+    fwprintf ( stdout , "%f\n" ,5.43 ) ;
+    fwprintf ( stdout , "ok\n" ) ;
     
-    fstdioPrintw ( &stdio, stdout, L"wide the end .\n" );
-    fPrints ( stdout, "s8 the end 2.\n" ); 
+    fwprintf ( stdout , L"wide the end .\n" );
+    fwprintf ( stdout ,  "s8 the end 2.\n" ); 
     
  // ......................................................................
 
-        //stdioPutw( &stdio , L"\n" ) ;
+        //fwprintf( stdout , L"\n" ) ;
         
         char32_t wc[] = U"zß水🍌"; // or "z\u00df\u6c34\U0001f34c"
         
         size_t wc_sz = sizeof wc / sizeof *wc;
         
-        wprintf( L"%zu UTF-32 code units: [ ", wc_sz);
+    fwprintf ( stdout , L"%zu UTF-32 code units: [ ", wc_sz);
         
         for (size_t n = 0; n < wc_sz; ++n) wprintf( L"%#x ", wc[n]);
 
 /*
-        stdioPutw( &stdio , L"\n{ \n" ) ;
+        fwprintf( stdout , L"\n{ \n" ) ;
 
         wchar_t *STR = cnvS32toWS( wc ) ;
 
-        stdioPutw( &stdio , STR ) ;
+        fwprintf( stdout , STR ) ;
 
-        stdioPutw( &stdio , L" } \n" ) ;
+        fwprintf( stdout , L" } \n" ) ;
 
         wprintf ( L"%ls....\n",wc ) ;
 */
@@ -125,7 +127,7 @@ int main ( void )
  // ......................................................................
 
 
-    stdioPutw( &stdio , L" ( string000.c ) \n" ) ;
+    fwprintf( stdout , L" ( string000.c ) \n" ) ;
 
  // ......................................................................
 
