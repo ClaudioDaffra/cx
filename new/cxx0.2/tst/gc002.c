@@ -6,7 +6,6 @@
 
 int main(void)
 {
-
     //
    
     char* c1 = (char*) gcMalloc ( 10 ) ;

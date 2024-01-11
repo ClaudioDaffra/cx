@@ -4,21 +4,20 @@
 
 // ....................................................................... gcLocalSmartPointerMalloc
 
-
-struct smartPointer_s * const gcLocalSmartPointer( gc_t *gc , void* unsafePtr )
+struct smartPointer_s *  gcLocalSmartPointer( gc_t *gc , void* unsafePtr )
 {
     if ( unsafePtr==0 ) return NULL ;
 
-	struct smartPointer_s * sp = (struct smartPointer_s*) gcLocalMalloc ( gc,sizeof(smartPointer_t) );
+	struct smartPointer_s *  sp = (struct smartPointer_s*  ) gcLocalMalloc ( gc,sizeof(struct smartPointer_s) );
 	
 	if (sp != NULL )
 	{
-		sp->SMART_POINTER_ID = (void*) unsafePtr ;
+		sp->var = unsafePtr ;
 	}
 	else
 	{
-		sp->SMART_POINTER_ID  = NULL ;
+		sp->var = NULL; ;
 	}
 
-    return (struct smartPointer_s * const) sp ;
+    return  sp ;
 }

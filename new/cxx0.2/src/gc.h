@@ -42,6 +42,7 @@ struct gcMap_s
     size_t          size                                ;
     float           load_factor                         ;
     size_t          count                               ;
+	size_t			memory								;
 };
 
 typedef struct gcMap_s gcMap_t;

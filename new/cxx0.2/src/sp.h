@@ -3,29 +3,34 @@
 #define CD_SMART_POINTER
 
 
-#define SMART_POINTER_ID_INTERNAL MERGE(smartPointerName,1)
-#define SMART_POINTER_ID 		  SMART_POINTER_ID_INTERNAL
-
- 
-typedef struct smartPointer_s
+struct smartPointer_s
 {
-	const void*  SMART_POINTER_ID ;
-} smartPointer_t ;
+	union{
+		void*  const  	ptr	;
+		void*  		 	var	;	
+	};
+} ;
  
-#define smartPointerTypeDef(TYPE)\
-typedef struct MERGE( MERGE( smartPointer_,TYPE) , _s )  \
-{\
-	TYPE*  SMART_POINTER_ID ;\
-} MERGE( MERGE( smartPointer_, TYPE) , _t )  ;
+typedef struct smartPointer_s * const smartPointer_t ;
+ 
+struct smartPointer_s *  gcLocalSmartPointer( gc_t *gc , void* unsafePtr ) ;
+
+#define sp(TYPE,PTR) *(TYPE*)PTR->ptr
+
+#define gcSmartPointerMove(p1,p2)\
+do{\
+	gcFree(p1->var);\
+	p1->var = p2->var;\
+	p2->var=NULL;\
+}while(0);
 
 
-struct smartPointer_s * const gcLocalSmartPointer( gc_t *gc , void* unsafePtr ) ;
+#define sptr(TYPE,ID) ((TYPE*)ID->ptr)
 
-#define  gcUniquePointer(PTR) gcLocalSmartPointer( gc , PTR )
+#define sptrData(TYPE,ID) ((TYPE*)ID->ptr)->data
 
-#define smartPointer_t(TYPE) MERGE(MERGE(smartPointer_,TYPE),_t) * const
-
-#define sp(PTR) PTR->SMART_POINTER_ID
+	
+//
 
 #endif
 

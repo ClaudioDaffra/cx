@@ -83,7 +83,7 @@
     typedef int errno_t;
 
     #include "gc.h"
-    //#include "sp.h"
+    #include "sp.h"
 	
 /*
     #include "hashMap.h"
