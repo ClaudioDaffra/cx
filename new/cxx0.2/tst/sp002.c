@@ -10,7 +10,6 @@ int main(void)
 {
     //
 
-
 	smartPointer_t p1 = (smartPointer_t)gcLocalSmartPointer( gc , new(sizeof(int)*100)  );
 
 	sp(int,p1)=10;
