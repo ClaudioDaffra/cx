@@ -85,22 +85,17 @@
     #include "gc.h"
     #include "sp.h"
 
+    #include "stdio.h"
     #include "iterator.h"
     #include "mvector.h"
 
  /*  
     #include "hashMap.h"
-
-    #include "stdio.h"
-
+    #include "mstack.h"
+*/
     #include "string.h"
     #include "stringw.h"
     #include "string8.h"
-
-
- 
-    #include "mstack.h"
-*/
 
     // ................................................ new
 
