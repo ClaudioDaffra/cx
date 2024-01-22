@@ -1,4 +1,3 @@
-
 #include "cxx.h"
 
 
@@ -34,6 +33,7 @@ INITIALIZER( initialize)
 static void finalize(void)
 {
 	gcStop();
+    printf("\n");
 }
 #endif
 
@@ -416,12 +416,13 @@ int gcCompareInt(const void* a, const void* b)
   int vb = *(const int*) b;
   return (va > vb) - (va < vb);
 }
+
 /*
 int gcCompare_uint64_t(const uint64_t* a, const uint64_t* b)
 {
   return (a > b) - (a < b);
 }
-*/
+
 int gcCompareFloat (const void * a, const void * b)
 {
   float fa = *(const float*) a;
@@ -452,6 +453,7 @@ int gcCompareDoubleAsInt (const void * a, const void * b)
   int fb = (int)_fb;  
   return (fa > fb) - (fa < fb);
 }
+*/
 // ....................................................................... gcallback gcFreeDtor -> FREE
 
 void gcFreeDtor( void * ptr )
@@ -704,4 +706,3 @@ double* gcLocalDoubleDup( gc_t* gc, double val )
 
 
 /**/
-

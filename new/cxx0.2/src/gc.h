@@ -153,25 +153,16 @@ wchar_t*	gcLocalWcsDup               ( gc_t* gc,wchar_t* str) ;
 #define gcFileLocalClose(GC,PTR)                  gcLocalFree(GC,(void*)PTR)
 #define gcFileClose(PTR)                          gcLocalFree(gc,(void*)PTR)
 
+// gcCompare
 
+int gcCompareInt        (   const void * a, const void * b  ) ;
+int gcCompareStrC       (   const void * a, const void * b  ) ;
+int gcCompareWStrC      (   const void * a, const void * b  ) ;
+int gcComparepStrC      (   const void * a, const void * b  ) ;
+int gcComparepWStrC     (   const void * a, const void * b  ) ;
+
+//
 
 #endif
 
-
-//			global	local
-
-/*
-
-malloc
-calloc
-realloc
-free
-file
-filew
-strdup
-strdupw
-
-*/
-
 /* the end */
-
