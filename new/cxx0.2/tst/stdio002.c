@@ -4,7 +4,7 @@
 
 // clear ; gcc src/gc.c src/stdio.c tst/stdio002.c -o bin/x -Wall -pedantic -Wextra
 
-// cls & cl src\gc.c src\stdio.c tst\stdio002.c /Febin\x.exe /WX /utf-8
+// cls & cl src\gc.c  src\string.c  src\stdio.c tst\stdio002.c /Febin\x.exe /WX /utf-8
 
 int main(void)
 {	

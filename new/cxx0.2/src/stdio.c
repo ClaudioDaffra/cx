@@ -13,8 +13,9 @@ void stdioSetUTF8( stdio_t *stdio )
     const SHORT     _fontWeight =    FW_NORMAL          ;
     const SHORT     _fontSizeY  =    16                 ;
     const SHORT     _fontSizeX  =    0                  ;
-    const int        chcp       =    936                ;
-
+    //const int        chcp       =    936                ;
+	const int        chcp       =    65001                ;
+	
     // set font
 
     stdio->info.cbSize       = sizeof(stdio->info)      ;
@@ -64,10 +65,10 @@ void stdioSetMBS( stdio_t *stdio )
 {
 #ifdef _MSC_VER
     //const wchar_t*   _fontName=L"SimSun-ExtB";
-    const wchar_t   _fontName[]=L"SimSun-ExtB";
-    SHORT           _fontWeight=FW_NORMAL;
-    SHORT           _fontSizeY=16;
-    SHORT           _fontSizeX=0;    
+    const wchar_t   _fontName[]	=	L"SimSun-ExtB"	;
+    SHORT           _fontWeight	=	FW_NORMAL		;
+    SHORT           _fontSizeY	=	16				;
+    SHORT           _fontSizeX	=	0				;    
 
     // set font
     
@@ -79,6 +80,7 @@ void stdioSetMBS( stdio_t *stdio )
     wcscpy_s(     stdio->info.FaceName, _countof(_fontName) , _fontName ) ;
     
     SetCurrentConsoleFontEx(GetStdHandle(STD_OUTPUT_HANDLE), false, &stdio->info);
+	
     int chcp=65001;            
     SetConsoleCP( chcp ) ;             
     SetConsoleOutputCP( chcp ); 
@@ -86,9 +88,9 @@ void stdioSetMBS( stdio_t *stdio )
     setlocale ( LC_ALL, "it_IT.UTF-8") ;
     setlocale ( LC_NUMERIC , "C"     ) ; 
     
-    stdio->stream_stdin     = stdioStreamMBS ;
-    stdio->stream_stdout     = stdioStreamMBS ;
-    stdio->stream_stderr     = stdioStreamMBS ;
+    stdio->stream_stdin		= stdioStreamMBS ;
+    stdio->stream_stdout	= stdioStreamMBS ;
+    stdio->stream_stderr	= stdioStreamMBS ;
     
 #else
 
@@ -96,8 +98,8 @@ void stdioSetMBS( stdio_t *stdio )
     setlocale ( LC_NUMERIC , "C"      ) ;
 
     stdio->stream_stdin     = stdioStreamMBS ;
-    stdio->stream_stdout     = stdioStreamMBS ;
-    stdio->stream_stderr     = stdioStreamMBS ;
+    stdio->stream_stdout	= stdioStreamMBS ;
+    stdio->stream_stderr	= stdioStreamMBS ;
     
 #endif
 }
@@ -176,8 +178,7 @@ int cdFileWOpen(
 
     return 1 ;
 }
- 
- 
+
 // .................................................................... gc local file open wide
 
 FILE* gcLocalFileOpenW(gc_t *map , char* fileName , const char* flag , const char* ccs )

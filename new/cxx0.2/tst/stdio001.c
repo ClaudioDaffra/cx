@@ -23,7 +23,7 @@ int main ( void )
 
 	wchar_t wc;
 
-	while (( wc = fgetwc(pFileInput)) != EOF)
+	while (( wc = fgetwc(pFileInput)) != WEOF)
 	{
 	  fprintf(stdout, "[%lc]", wc);
 	}
