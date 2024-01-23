@@ -29,13 +29,13 @@
 void        stdioSetUTF8        ( stdio_t *stdio )     ;
 void        stdioSetMBS         ( stdio_t *stdio )     ;
 
-/*
+ 
 int         cdFileWOpen         		( FILE** pf, char* fileName, const char* flag , const char* ccs ) ;
 #define     stdFileWOpen        		cdFileWOpen
 
 FILE*       gcLocalFileOpenW            (gc_t *map , char* fileName , const char* flag , const char* ccs ) ;
 #define     gcFileOpenW(FN,FG,CCS)      gcLocalFileOpenW(gc,FN,FG,CCS)
-*/    
+ 
 
 
 unsigned char* fileGetUTF8Char(FILE *fi) ;

@@ -103,7 +103,7 @@ void stdioSetMBS( stdio_t *stdio )
 }
  
 // .................................................................... open file wide stream
-/*
+ 
 int cdFileWOpen( 
     FILE** pf,
     char* fileName, 
@@ -151,7 +151,7 @@ int cdFileWOpen(
     
 #else
   
-    char *tmp=strdup(fileName); // questo per evitare seg fault
+    char *tmp=gcStrDup(fileName); // questo per evitare seg fault
     
     for (uint32_t i=0;i<strlen(fileName);i++ )
     {
@@ -176,8 +176,8 @@ int cdFileWOpen(
 
     return 1 ;
 }
-*/
-/*
+ 
+ 
 // .................................................................... gc local file open wide
 
 FILE* gcLocalFileOpenW(gc_t *map , char* fileName , const char* flag , const char* ccs )
@@ -190,7 +190,7 @@ FILE* gcLocalFileOpenW(gc_t *map , char* fileName , const char* flag , const cha
  
     return pf ;
 }
-*/
+ 
 
 static unsigned char std_utf8_num_most_significant_ones[] = 
 {
@@ -281,7 +281,7 @@ unsigned char* fileGetUTF8Char(FILE *fi)
 	len=std_read_one_utf8_char_from_file(fi,   mbs) ;
 	mbs[len]=0;
 	
-	return strdup(mbs);
+	return gcStrDup(mbs);
 }
 
 unsigned char* fgetu(FILE *fi) 
@@ -332,7 +332,7 @@ char *stringGetUTF8Char( char *pstream )
 	for(int i=0;i<len;i++) buffer[i]=*pstream++;
 	buffer[len]=0;
 
-	return strdup(buffer);	
+	return gcStrDup(buffer);	
 }
 
 char *strgetu( char *pstream )
@@ -352,7 +352,7 @@ char *getUTF8CharFromPString( char **pstream )
 
     (*pstream) += strlen(buffer);
  
-	return strdup(buffer);	
+	return gcStrDup(buffer);	
 }
 
 char *pstrgetu( char **pstream )
@@ -401,6 +401,6 @@ char* cnv_utf16_to_mbc(char16_t c16x2[] )
 	int rc=0, in=0;
 	rc = c16rtomb(out, in, &st);
 
-	return strdup(out);
+	return gcStrDup(out);
 }
  
