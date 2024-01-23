@@ -3,8 +3,6 @@
 # Project contributors: clean with ./clean.sh, do not rely on .gitignore
 
 # exe files
-bin\*
-bin/*
 *.exe
 x
 

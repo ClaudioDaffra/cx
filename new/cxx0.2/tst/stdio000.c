@@ -14,23 +14,26 @@ int main ( void )
 
 	FILE *  pFileInput=gcFileOpenW ( fileInputName , "r","ccs=UTF-8") ;
 
-	if ( pFileInput== NULL )
+	if ( pFileInput != NULL )
 	{
-		fwprintf ( stdout , L"?! File Not FOund." ) ;
+		fwprintf ( stdout, L"reading file : \n" );
+
+		wchar_t wc;
+
+		while (( wc = fgetwc(pFileInput)) != (wchar_t)WEOF)
+		{
+			fwprintf(stdout, L"[%lc]", wc);
+		}
+		
+		fwprintf ( stdout,L"\n" );
+
+		gcFileClose(pFileInput);
+	}
+	else
+	{
+		fwprintf ( stdout , L"?! File Not Found.\n") ;
 		exit(-1);
 	}
-	fwprintf ( stdout, L"reading file : \n" );
-
-	wchar_t wc;
-
-	while (( wc = fgetwc(pFileInput)) != WEOF)
-	{
-	  fwprintf(stdout, L"[%lc]", wc);
-	}
-
-	fwprintf ( stdout,L"\n" );
-
-	gcFileClose(pFileInput);
-
+	
 	return 0 ;
 }

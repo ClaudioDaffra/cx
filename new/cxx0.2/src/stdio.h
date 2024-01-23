@@ -56,7 +56,7 @@ char *pstrgetu( char **pstream ) ;
  
 char32_t cnv_mbc_to_utf32(char mbs[]) ;
  
-void cnv_mbc_to_utf16(char mbs[],char16_t c16x2[] ) ;
+int cnv_mbc_to_utf16(char mbs[],char16_t c16x2[] ) ;
  
 char* cnv_utf16_to_mbc(char16_t c16x2[] ) ;
  

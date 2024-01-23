@@ -2,7 +2,7 @@
 
 #include "../src/cxx.h"
 
-// clear ; gcc src/gc.c src/stdio.c tst/stdio002.c -o bin/x -Wall -pedantic -Wextra
+// clear ; gcc src/gc.c   src/string.c  src/stdio.c tst/stdio002.c -o bin/x -Wall -pedantic -Wextra
 
 // cls & cl src\gc.c  src\string.c  src\stdio.c tst\stdio002.c /Febin\x.exe /WX /utf-8
 
@@ -24,7 +24,7 @@ int main(void)
 		unsigned char *ps = stringona ;
 		*ps='\0';
 		
-		int fPush=1;
+		//int fPush=1;
 		
 		while (!feof(fi))
 		{
@@ -32,7 +32,7 @@ int main(void)
 
 			mbs=fileGetUTF8Char(fi); // fgetu
 
-			printf("(%d %s)",strlen(mbs) ,mbs ) ;
+			printf("(%d %s)",(int)strlen((char*)mbs) ,mbs ) ;
 
 		}
 	}
@@ -89,7 +89,7 @@ int main(void)
 	printf("c16: 0x%08x 0x%08x \n", c16x2[0],c16x2[1]);
 	
 	
-	printf ( "\nfrom c16x2 toMBS {%s} ",cnv_utf16_to_mbc(c16x2) ) ;
+	//printf ( "\nfrom c16x2 toMBS {%s} \n",cnv_utf16_to_mbc(c16x2) ) ;
 	
 	return 0 ;
 }
