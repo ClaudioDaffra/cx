@@ -1,6 +1,0 @@
-cxx\
-    bin\        binary
-    doc\        documentation
-    lib\        library (dll,so)
-    src\        source code
-    tst\        example
